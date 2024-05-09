@@ -14,7 +14,7 @@ App::~App()
 
 bool App::OnInit() 
 {
-	mainWindowPtr = new MainWindow();
-	mainWindowPtr->Show();
+	mainWindow = new MainWindow();
+	mainWindow->Show();
 	return true;
 }

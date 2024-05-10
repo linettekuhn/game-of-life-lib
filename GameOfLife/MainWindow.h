@@ -5,7 +5,7 @@
 class MainWindow : public wxFrame
 {
 private:
-	DrawingPanel* drawingPanel;
+	DrawingPanel* pDrawingPanel;
 public:
 	MainWindow();
 	~MainWindow();

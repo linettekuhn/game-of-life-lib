@@ -15,17 +15,20 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	//set the brush (fill of shape) color
 	graphicsContext->SetBrush(*wxWHITE);
 	
+	float cellWidth = mPanelSize.GetWidth() / mGridSize;
+	float cellHeight = mPanelSize.GetHeight() / mGridSize;
+
 	//draw grid by drawing rectangles with loops
-	for (int i = 0; i < gridSize; i++)
+	for (int i = 0; i < mGridSize; i++)
 	{
-		for (int j = 0; j < gridSize; j++)
+		for (int j = 0; j < mGridSize; j++)
 		{
-			graphicsContext->DrawRectangle(j * gridSize, i * gridSize, gridSize, gridSize);
+			graphicsContext->DrawRectangle(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
 		}
 	}
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), gridSize(15)
+DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(15), mPanelSize(this->GetSize())
 {
 	this->SetBackgroundStyle(wxBG_STYLE_PAINT); 
 	this->Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);

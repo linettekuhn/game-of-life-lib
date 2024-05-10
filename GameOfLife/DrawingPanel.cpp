@@ -11,12 +11,21 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	}
 	//set the pen (outline of shape) color
 	graphicsContext->SetPen(*wxLIGHT_GREY);
+	
 	//set the brush (fill of shape) color
 	graphicsContext->SetBrush(*wxWHITE);
-	graphicsContext->DrawRectangle(0, 0, 100, 100);
+	
+	//draw grid by drawing rectangles with loops
+	for (int i = 0; i < gridSize; i++)
+	{
+		for (int j = 0; j < gridSize; j++)
+		{
+			graphicsContext->DrawRectangle(j * gridSize, i * gridSize, gridSize, gridSize);
+		}
+	}
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), wxSize(300, 500))
+DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), gridSize(15)
 {
 	this->SetBackgroundStyle(wxBG_STYLE_PAINT); 
 	this->Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);

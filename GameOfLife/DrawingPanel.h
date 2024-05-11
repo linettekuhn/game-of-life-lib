@@ -5,11 +5,12 @@
 class DrawingPanel : public wxPanel
 {
 private:
-	wxSize mPanelSize;
-	float mGridSize;
+	int mGridSize;
+
 	void OnPaint(wxPaintEvent& paintEvent);
 public:
 	DrawingPanel(wxWindow* mainWindowPtr);
 	~DrawingPanel();
 };
+
 

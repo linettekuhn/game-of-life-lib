@@ -1,5 +1,15 @@
 #include "DrawingPanel.h"
 
+void DrawingPanel::InitializeGameBoard(int& gridSize)
+{
+	SetGridSize(gridSize);
+	mGameBoard.resize(mGridSize);
+	for (int i = 0; i < mGridSize; i++)
+	{
+		mGameBoard[i].resize(mGridSize);
+	}
+}
+
 void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 {
 	wxAutoBufferedPaintDC dc(this);
@@ -28,12 +38,17 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	}
 }
 
+void DrawingPanel::SetGridSize(int& gridSize)
+{
+	mGridSize = gridSize;
+}
+
 void DrawingPanel::SetPanelSize(wxSize& panelSize)
 {
 	SetSize(panelSize);
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(15)
+DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(0)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 
 	Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);

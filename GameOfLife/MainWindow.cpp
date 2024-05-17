@@ -8,9 +8,10 @@ void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 	Refresh();
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(300, 234)), pDrawingPanel(new DrawingPanel(this))
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(300, 234)), pDrawingPanel(new DrawingPanel(this)), mGridSize(15)
 {
 	Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
+	pDrawingPanel->InitializeGameBoard(mGridSize);
 }
 
 MainWindow::~MainWindow()

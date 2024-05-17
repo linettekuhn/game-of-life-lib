@@ -8,10 +8,20 @@ void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 	Refresh();
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(300, 234)), pDrawingPanel(new DrawingPanel(this)), mGridSize(15)
+void MainWindow::InitializeGameBoard()
+{
+	mGameBoard.resize(mGridSize);
+	for (int i = 0; i < mGridSize; i++)
+	{
+		mGameBoard[i].resize(mGridSize);
+	}
+	pDrawingPanel->SetGridSize(mGridSize);
+}
+
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 400)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)
 {
 	Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
-	pDrawingPanel->InitializeGameBoard(mGridSize);
+	InitializeGameBoard();
 }
 
 MainWindow::~MainWindow()

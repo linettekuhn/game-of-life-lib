@@ -8,9 +8,13 @@ private:
 	DrawingPanel* pDrawingPanel;
 	int mGridSize;
 	std::vector<std::vector<bool>> mGameBoard;
-	
+	int mGenerationCount = 0;
+	int mLivingCellCount = 0;
+	wxStatusBar* pStatusBar;
+
 	void OnSizeChange(wxSizeEvent& sizeEvent);
 	void InitializeGameBoard();
+	void UpdateStatusBar();
 public:
 	MainWindow();
 	~MainWindow();

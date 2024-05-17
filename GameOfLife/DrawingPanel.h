@@ -17,4 +17,5 @@ public:
 	void SetPanelSize(wxSize& panelSize);
 	DrawingPanel(wxWindow* mainWindowPtr, std::vector<std::vector<bool>>& gameBoard);
 	~DrawingPanel();
+	wxDECLARE_EVENT_TABLE();
 };

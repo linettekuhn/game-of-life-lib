@@ -1,5 +1,9 @@
 #include "DrawingPanel.h"
 
+wxBEGIN_EVENT_TABLE(DrawingPanel, wxPanel)
+	EVT_PAINT(DrawingPanel::OnPaint)
+	EVT_LEFT_UP(DrawingPanel::OnMouseUp)
+wxEND_EVENT_TABLE()
 
 void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 {
@@ -80,8 +84,6 @@ void DrawingPanel::SetPanelSize(wxSize& panelSize)
 DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(0), rGameBoard(gameBoard), pMainWindow(mainWindow)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 
-	Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
-	Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseUp, this);
 }
 
 DrawingPanel::~DrawingPanel()

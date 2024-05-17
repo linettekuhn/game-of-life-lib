@@ -1,5 +1,9 @@
 #include "MainWindow.h"
 
+wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
+	EVT_SIZE(MainWindow::OnSizeChange)
+wxEND_EVENT_TABLE()
+
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 {
 	wxSize windowSize = GetSize();
@@ -20,7 +24,6 @@ void MainWindow::InitializeGameBoard()
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 400)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)
 {
-	Bind(wxEVT_SIZE, &MainWindow::OnSizeChange, this);
 	InitializeGameBoard();
 }
 

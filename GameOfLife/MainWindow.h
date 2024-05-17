@@ -14,5 +14,6 @@ private:
 public:
 	MainWindow();
 	~MainWindow();
+	wxDECLARE_EVENT_TABLE();
 };
 

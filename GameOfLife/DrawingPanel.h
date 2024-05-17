@@ -7,12 +7,14 @@ class DrawingPanel : public wxPanel
 private:
 	int mGridSize;
 	std::vector<std::vector<bool>> mGameBoard;
+	std::vector<std::vector<bool>>& rGameBoard;
 
 	void OnPaint(wxPaintEvent& paintEvent);
+	void OnMouseUp(wxMouseEvent& mouseEvent);
 public:
 	void InitializeGameBoard(int& gridSize);
 	void SetGridSize(int& gridSize);
 	void SetPanelSize(wxSize& panelSize);
-	DrawingPanel(wxWindow* mainWindowPtr);
+	DrawingPanel(wxWindow* mainWindowPtr, std::vector<std::vector<bool>>& gameBoard);
 	~DrawingPanel();
 };

@@ -38,6 +38,26 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	}
 }
 
+void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
+{
+	//store mouse's coordinates in separate variables
+	int mouseX = mouseEvent.GetX();
+	int mouseY = mouseEvent.GetY();
+
+	//calculate cell's width and height
+	float cellWidth = GetSize().x / (float)mGridSize;
+	float cellHeight = GetSize().y / (float)mGridSize;
+
+	// calculate index position of mouse by dividing the mouse's coordinates by the cell's dimensions
+	int rowIndex = mouseX / cellWidth;
+	int colIndex = mouseY / cellHeight;
+
+	// flip the boolean value of the cell clicked
+	mGameBoard[colIndex][rowIndex] = !(mGameBoard[colIndex][rowIndex]);
+
+	Refresh();
+} 
+
 void DrawingPanel::SetGridSize(int& gridSize)
 {
 	mGridSize = gridSize;
@@ -48,10 +68,11 @@ void DrawingPanel::SetPanelSize(wxSize& panelSize)
 	SetSize(panelSize);
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(0)
+DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), mGridSize(0), rGameBoard(gameBoard)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 
 	Bind(wxEVT_PAINT, &DrawingPanel::OnPaint, this);
+	Bind(wxEVT_LEFT_UP, &DrawingPanel::OnMouseUp, this);
 }
 
 DrawingPanel::~DrawingPanel()

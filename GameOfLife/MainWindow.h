@@ -11,8 +11,15 @@ private:
 	int mGenerationCount = 0;
 	int mLivingCellCount = 0;
 	wxStatusBar* pStatusBar;
+	wxToolBar* pToolBar;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
+	
+	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
+	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
+	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
+	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
+	
 	void InitializeGameBoard();
 	void UpdateStatusBar();
 public:

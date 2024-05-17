@@ -48,6 +48,31 @@ void MainWindow::UpdateStatusBar()
 void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
 {
 }
+
+int MainWindow::LivingNeighborCount(int& row, int& col)
+{
+	int neighborCount = 0;
+	for (int i = -1; i < 2; i++)
+	{
+		for (int j = -1; j < 2; j++)
+		{
+			int cellRow = row + j;
+			int cellCol = col + i;
+			
+			if (i == 0 && j == 0) { continue; }
+			if (cellRow < 0 || cellCol < 0) { continue; }
+			if (cellRow >= mGridSize || cellCol >= mGridSize) { continue; }
+		
+			if (mGameBoard[i][j])
+			{
+				neighborCount++;
+			}
+
+		}
+	}
+	return neighborCount;
+}
+
 void MainWindow::OnNextButtonClick(wxCommandEvent& nextButtonEvent)
 {
 }

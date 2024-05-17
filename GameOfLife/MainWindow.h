@@ -14,7 +14,6 @@ private:
 	wxToolBar* pToolBar;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
-	
 	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
 	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
 	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
@@ -22,6 +21,7 @@ private:
 	
 	void InitializeGameBoard();
 	void UpdateStatusBar();
+	int LivingNeighborCount(int& row, int& col);
 public:
 	MainWindow();
 	~MainWindow();

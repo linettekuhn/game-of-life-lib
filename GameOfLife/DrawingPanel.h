@@ -9,8 +9,7 @@ private:
 
 	void OnPaint(wxPaintEvent& paintEvent);
 public:
+	void SetPanelSize(wxSize& panelSize);
 	DrawingPanel(wxWindow* mainWindowPtr);
 	~DrawingPanel();
 };
-
-

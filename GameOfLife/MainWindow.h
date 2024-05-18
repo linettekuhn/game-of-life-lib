@@ -13,12 +13,14 @@ private:
 	wxStatusBar* pStatusBar;
 	wxToolBar* pToolBar;
 
+
 	void OnSizeChange(wxSizeEvent& sizeEvent);
 	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
 	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
 	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
 	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
 	
+	void NextGeneration();
 	void InitializeGameBoard();
 	void UpdateStatusBar();
 	int LivingNeighborCount(int& row, int& col);

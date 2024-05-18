@@ -49,6 +49,40 @@ void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
 {
 }
 
+void MainWindow::NextGeneration()
+{
+	mLivingCellCount = 0;
+	mGenerationCount++;
+	std::vector<std::vector<bool>> sandbox;
+	sandbox.resize(mGridSize);
+	for (int i = 0; i < mGridSize; i++)
+	{
+		sandbox[i].resize(mGridSize);
+	}
+
+	for (int i = 0; i < mGridSize; i++)
+	{
+		for (int j = 0; j < mGridSize; j++)
+		{
+			int neighborCount = LivingNeighborCount(j, i);
+			bool isAlive = mGameBoard[i][j];
+			if (isAlive && (neighborCount == 2 || neighborCount == 3))
+			{
+				sandbox[i][j] = true;
+				mLivingCellCount++;
+			}
+			else if (!isAlive && neighborCount == 3)
+			{
+				sandbox[i][j] = true;
+				mLivingCellCount++;
+			}
+		}
+	}
+	mGameBoard.swap(sandbox);
+	UpdateStatusBar();
+	Refresh();
+}
+
 int MainWindow::LivingNeighborCount(int& row, int& col)
 {
 	int neighborCount = 0;
@@ -63,7 +97,7 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 			if (cellRow < 0 || cellCol < 0) { continue; }
 			if (cellRow >= mGridSize || cellCol >= mGridSize) { continue; }
 		
-			if (mGameBoard[i][j])
+			if (mGameBoard[cellCol][cellRow])
 			{
 				neighborCount++;
 			}
@@ -75,6 +109,7 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 
 void MainWindow::OnNextButtonClick(wxCommandEvent& nextButtonEvent)
 {
+	NextGeneration();
 }
 void MainWindow::OnPauseButtonClick(wxCommandEvent& pauseButtonEvent)
 {
@@ -83,7 +118,7 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 {
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 400)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)
 {
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);

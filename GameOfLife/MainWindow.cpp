@@ -116,6 +116,17 @@ void MainWindow::OnPauseButtonClick(wxCommandEvent& pauseButtonEvent)
 }
 void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 {
+	for (int i = 0; i < mGameBoard.size(); i++)
+	{
+		for (int j = 0; j < mGameBoard[i].size(); j++)
+		{
+			mGameBoard[i][j] = false;
+		}
+	}
+	mLivingCellCount = 0;
+	mGenerationCount = 0;
+	UpdateStatusBar();
+	Refresh();
 }
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)

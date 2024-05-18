@@ -12,14 +12,16 @@ private:
 	int mLivingCellCount = 0;
 	wxStatusBar* pStatusBar;
 	wxToolBar* pToolBar;
-
+	wxTimer* pTimer;
+	int mInterval = 50;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
 	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
 	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
 	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
 	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
-	
+	void OnTimerStart(wxTimerEvent& timerEvent);
+
 	void NextGeneration();
 	void InitializeGameBoard();
 	void UpdateStatusBar();

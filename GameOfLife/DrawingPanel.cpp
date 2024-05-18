@@ -56,17 +56,7 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 	int rowIndex = mouseY / cellHeight;
 
 	// flip the boolean value of the cell clicked
-	//rGameBoard[colIndex][rowIndex] = !(rGameBoard[colIndex][rowIndex]);
-
-	bool isAlive = rGameBoard[colIndex][rowIndex];
-	if (isAlive)
-	{
-		rGameBoard[colIndex][rowIndex] = false;
-	}
-	else
-	{
-		rGameBoard[colIndex][rowIndex] = true;
-	}
+	rGameBoard[colIndex][rowIndex] = !(rGameBoard[colIndex][rowIndex]);
 
 	pMainWindow->Refresh();
 } 

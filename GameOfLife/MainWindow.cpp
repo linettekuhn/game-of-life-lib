@@ -1,7 +1,8 @@
-#define TOOLBAR_PLAY_ICON 10001
-#define TOOLBAR_NEXT_ICON 10002
-#define TOOLBAR_PAUSE_ICON 10003
-#define TOOLBAR_CLEAR_ICON 10004
+#define TIMER_ID 10000
+#define TOOLBAR_PLAY_ICON_ID 10001
+#define TOOLBAR_NEXT_ICON_ID 10002
+#define TOOLBAR_PAUSE_ICON_ID 10003
+#define TOOLBAR_CLEAR_ICON_ID 10004
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -11,10 +12,11 @@
 
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_SIZE(MainWindow::OnSizeChange)
-	EVT_MENU(TOOLBAR_PLAY_ICON, MainWindow::OnPlayButtonClick)
-	EVT_MENU(TOOLBAR_NEXT_ICON, MainWindow::OnNextButtonClick)
-	EVT_MENU(TOOLBAR_PAUSE_ICON, MainWindow::OnPauseButtonClick)
-	EVT_MENU(TOOLBAR_CLEAR_ICON, MainWindow::OnClearButtonClick)
+	EVT_MENU(TOOLBAR_PLAY_ICON_ID, MainWindow::OnPlayButtonClick)
+	EVT_MENU(TOOLBAR_NEXT_ICON_ID, MainWindow::OnNextButtonClick)
+	EVT_MENU(TOOLBAR_PAUSE_ICON_ID, MainWindow::OnPauseButtonClick)
+	EVT_MENU(TOOLBAR_CLEAR_ICON_ID, MainWindow::OnClearButtonClick)
+	EVT_TIMER(TIMER_ID, MainWindow::OnTimerStart)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -45,8 +47,9 @@ void MainWindow::UpdateStatusBar()
 	pStatusBar->SetStatusText(wxString::Format("Living Cell Count: %d", mLivingCellCount), 1);
 }
 
-void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
+void MainWindow::OnTimerStart(wxTimerEvent& timerEvent)
 {
+	NextGeneration();
 }
 
 void MainWindow::NextGeneration()
@@ -107,15 +110,24 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 	return neighborCount;
 }
 
+void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
+{
+	pTimer->Start(mInterval);
+}
+
 void MainWindow::OnNextButtonClick(wxCommandEvent& nextButtonEvent)
 {
 	NextGeneration();
 }
+
 void MainWindow::OnPauseButtonClick(wxCommandEvent& pauseButtonEvent)
 {
+	pTimer->Stop();
 }
+
 void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 {
+	pTimer->Stop();
 	for (int i = 0; i < mGameBoard.size(); i++)
 	{
 		for (int j = 0; j < mGameBoard[i].size(); j++)
@@ -129,7 +141,7 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 	Refresh();
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15)
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(1), pTimer(new wxTimer(this, TIMER_ID))
 {
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);
@@ -137,10 +149,10 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0,
 	wxBitmap clearIcon(trash_xpm);
 
 	pToolBar = CreateToolBar();
-	pToolBar->AddTool(TOOLBAR_PLAY_ICON, "Play", playIcon);
-	pToolBar->AddTool(TOOLBAR_NEXT_ICON, "Next", nextIcon);
-	pToolBar->AddTool(TOOLBAR_PAUSE_ICON, "Pause", pauseIcon);
-	pToolBar->AddTool(TOOLBAR_CLEAR_ICON, "Clear", clearIcon);
+	pToolBar->AddTool(TOOLBAR_PLAY_ICON_ID, "Play", playIcon);
+	pToolBar->AddTool(TOOLBAR_NEXT_ICON_ID, "Next", nextIcon);
+	pToolBar->AddTool(TOOLBAR_PAUSE_ICON_ID, "Pause", pauseIcon);
+	pToolBar->AddTool(TOOLBAR_CLEAR_ICON_ID, "Clear", clearIcon);
 	pToolBar->Realize();
 
 	pStatusBar = CreateStatusBar();
@@ -153,5 +165,6 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0,
 
 MainWindow::~MainWindow()
 {
-
+	delete pDrawingPanel;
+	delete pTimer;
 }

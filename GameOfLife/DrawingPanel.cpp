@@ -78,5 +78,4 @@ DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>&
 
 DrawingPanel::~DrawingPanel()
 {
-
 }

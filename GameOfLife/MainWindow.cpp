@@ -32,12 +32,12 @@ void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 
 void MainWindow::InitializeGameBoard()
 {
-	mGameBoard.resize(mGridSize);
-	for (int i = 0; i < mGridSize; i++)
+	mGameBoard.resize(mSettings.gridSize);
+	for (int i = 0; i < mSettings.gridSize; i++)
 	{
-		mGameBoard[i].resize(mGridSize);
+		mGameBoard[i].resize(mSettings.gridSize);
 	}
-	pDrawingPanel->SetGridSize(mGridSize);
+	pDrawingPanel->SetGridSize(mSettings.gridSize);
 }
 
 void MainWindow::UpdateStatusBar()
@@ -57,15 +57,15 @@ void MainWindow::NextGeneration()
 	mLivingCellCount = 0;
 	mGenerationCount++;
 	std::vector<std::vector<bool>> sandbox;
-	sandbox.resize(mGridSize);
-	for (int i = 0; i < mGridSize; i++)
+	sandbox.resize(mSettings.gridSize);
+	for (int i = 0; i < mSettings.gridSize; i++)
 	{
-		sandbox[i].resize(mGridSize);
+		sandbox[i].resize(mSettings.gridSize);
 	}
 
-	for (int i = 0; i < mGridSize; i++)
+	for (int i = 0; i < mSettings.gridSize; i++)
 	{
-		for (int j = 0; j < mGridSize; j++)
+		for (int j = 0; j < mSettings.gridSize; j++)
 		{
 			int neighborCount = LivingNeighborCount(j, i);
 			bool isAlive = mGameBoard[i][j];
@@ -98,7 +98,7 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 			
 			if (i == 0 && j == 0) { continue; }
 			if (cellRow < 0 || cellCol < 0) { continue; }
-			if (cellRow >= mGridSize || cellCol >= mGridSize) { continue; }
+			if (cellRow >= mSettings.gridSize || cellCol >= mSettings.gridSize) { continue; }
 		
 			if (mGameBoard[cellCol][cellRow])
 			{
@@ -112,7 +112,7 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 
 void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
 {
-	pTimer->Start(mInterval);
+	pTimer->Start(mSettings.interval);
 }
 
 void MainWindow::OnNextButtonClick(wxCommandEvent& nextButtonEvent)
@@ -141,7 +141,7 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 	Refresh();
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard)), mGridSize(15), pTimer(new wxTimer(this, TIMER_ID))
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings)), pTimer(new wxTimer(this, TIMER_ID))
 {
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);
@@ -149,6 +149,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0,
 	wxBitmap clearIcon(trash_xpm);
 
 	pToolBar = CreateToolBar();
+	pToolBar->SetToolBitmapSize(wxSize(30, 25));
 	pToolBar->AddTool(TOOLBAR_PLAY_ICON_ID, "", playIcon, "Play");
 	pToolBar->AddTool(TOOLBAR_NEXT_ICON_ID, "", nextIcon, "Next");
 	pToolBar->AddTool(TOOLBAR_PAUSE_ICON_ID, "", pauseIcon, "Pause");

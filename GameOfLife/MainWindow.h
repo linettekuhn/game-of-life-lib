@@ -1,19 +1,19 @@
 #pragma once
 #include "wx/wx.h"
 #include "DrawingPanel.h"
+#include "GameSettings.h"
 
 class MainWindow : public wxFrame
 {
 private:
 	DrawingPanel* pDrawingPanel;
-	int mGridSize;
 	std::vector<std::vector<bool>> mGameBoard;
 	int mGenerationCount = 0;
 	int mLivingCellCount = 0;
 	wxStatusBar* pStatusBar;
 	wxToolBar* pToolBar;
 	wxTimer* pTimer;
-	int mInterval = 50;
+	GameSettings mSettings;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
 	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);

@@ -71,7 +71,11 @@ void DrawingPanel::SetPanelSize(wxSize& panelSize)
 	SetSize(panelSize);
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()), rGameBoard(gameBoard), pMainWindow(mainWindow), pSettings(&settings)
+DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), 
+	mainWindow->GetSize()), 
+	rGameBoard(gameBoard), 
+	pMainWindow(mainWindow), 
+	pSettings(&settings)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 
 }

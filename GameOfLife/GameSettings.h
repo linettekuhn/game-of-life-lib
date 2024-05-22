@@ -24,14 +24,14 @@ struct GameSettings
 	{
 		return wxColor(deadCellRed, deadCellGreen, deadCellBlue, deadCellAlpha);
 	}
-	void SetLivingCellColor(wxColor& color)
+	void SetLivingCellColor(const wxColor& color)
 	{
 		livingCellRed = color.GetRed();
 		livingCellGreen = color.GetGreen();
 		livingCellBlue = color.GetBlue();
 		livingCellAlpha = color.GetAlpha();
 	}
-	void SetDeadCellColor(wxColor& color)
+	void SetDeadCellColor(const wxColor& color)
 	{
 		deadCellRed = color.GetRed();
 		deadCellGreen = color.GetGreen();

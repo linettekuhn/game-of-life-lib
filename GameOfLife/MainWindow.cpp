@@ -141,7 +141,9 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 	Refresh();
 }
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings)), pTimer(new wxTimer(this, TIMER_ID))
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), 
+pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings)), 
+pTimer(new wxTimer(this, TIMER_ID))
 {
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);

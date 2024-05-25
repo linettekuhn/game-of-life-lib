@@ -160,6 +160,7 @@ pTimer(new wxTimer(this, TIMER_ID)),
 pMenuBar(new wxMenuBar()),
 pOptionsMenu(new wxMenu())
 {
+	mSettings.LoadSettingsFile();
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);
 	wxBitmap pauseIcon(pause_xpm);

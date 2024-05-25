@@ -24,6 +24,7 @@ void SettingsDialog::SaveSettings()
 	rSettings.interval = intervalCtrl->GetValue();
 	rSettings.SetDeadCellColor(deadColorCtrl->GetColour());
 	rSettings.SetLivingCellColor(livingColorCtrl->GetColour());
+	rSettings.SaveSettingsFile();
 }
 
 void SettingsDialog::OnOkButtonClick(wxCommandEvent& okButtonEvent)
@@ -34,6 +35,7 @@ void SettingsDialog::OnOkButtonClick(wxCommandEvent& okButtonEvent)
 
 void SettingsDialog::OnCancelButtonClick(wxCommandEvent& cancelButtonEvent)
 {
+
 	EndModal(wxID_CANCEL);
 }
 

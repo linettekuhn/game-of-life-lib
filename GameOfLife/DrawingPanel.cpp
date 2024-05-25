@@ -17,24 +17,24 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	//set the pen (outline of shape) color
 	graphicsContext->SetPen(*wxLIGHT_GREY);
 	
-	float cellWidth = GetSize().x / (float)pSettings->gridSize;
-	float cellHeight = GetSize().y / (float)pSettings->gridSize;
+	float cellWidth = GetSize().x / (float)rSettings.gridSize;
+	float cellHeight = GetSize().y / (float)rSettings.gridSize;
 
 	//draw grid by drawing rectangles with loops
-	for (int i = 0; i < pSettings->gridSize; i++)
+	for (int i = 0; i < rSettings.gridSize; i++)
 	{
-		for (int j = 0; j < pSettings->gridSize; j++)
+		for (int j = 0; j < rSettings.gridSize; j++)
 		{
 			bool isAlive = rGameBoard[i][j];
 			if (isAlive)
 			{
 				//set the brush (fill of shape) to alive color
-				graphicsContext->SetBrush(pSettings->GetLivingCellColor());
+				graphicsContext->SetBrush(rSettings.GetLivingCellColor());
 			}
 			else
 			{
 				//set the brush (fill of shape) to dead color
-				graphicsContext->SetBrush(pSettings->GetDeadCellColor());
+				graphicsContext->SetBrush(rSettings.GetDeadCellColor());
 			}
 			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
 		}
@@ -48,8 +48,8 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 	int mouseY = mouseEvent.GetY();
 
 	//calculate cell's width and height
-	float cellWidth = GetSize().x / (float)pSettings->gridSize;
-	float cellHeight = GetSize().y / (float)pSettings->gridSize;
+	float cellWidth = GetSize().x / (float)rSettings.gridSize;
+	float cellHeight = GetSize().y / (float)rSettings.gridSize;
 
 	// calculate index position of mouse by dividing the mouse's coordinates by the cell's dimensions
 	int colIndex = mouseX / cellWidth;
@@ -63,7 +63,7 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 
 void DrawingPanel::SetGridSize(int& gridSize)
 {
-	pSettings->gridSize = gridSize;
+	rSettings.gridSize = gridSize;
 }
 
 void DrawingPanel::SetPanelSize(wxSize& panelSize)
@@ -75,7 +75,7 @@ DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>&
 	mainWindow->GetSize()), 
 	rGameBoard(gameBoard), 
 	pMainWindow(mainWindow), 
-	pSettings(&settings)
+	rSettings(settings)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 
 }

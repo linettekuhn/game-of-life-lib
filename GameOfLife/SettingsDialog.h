@@ -8,20 +8,19 @@ class SettingsDialog : public wxDialog
 {
 private:
 	wxBoxSizer* pMainSizer;
+	GameSettings& rSettings;
 	
 	wxSpinCtrl* gridSizeCtrl;
 	wxSpinCtrl* intervalCtrl;
 	wxColourPickerCtrl* deadColorCtrl;
 	wxColourPickerCtrl* livingColorCtrl;
 
-	GameSettings mSettings;
-
 	void LoadSettings();
 	void SaveSettings();
 	void OnOkButtonClick(wxCommandEvent& okButtonEvent);
 	void OnCancelButtonClick(wxCommandEvent& cancelButtonEvent);
 public:
-	SettingsDialog(wxWindow* mainWindowPtr);
+	SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings);
 	~SettingsDialog();
 	wxDECLARE_EVENT_TABLE();
 };

@@ -9,7 +9,7 @@ class DrawingPanel : public wxPanel
 private:
 	wxWindow* pMainWindow;
 	std::vector<std::vector<bool>>& rGameBoard;
-	GameSettings* pSettings;
+	GameSettings& rSettings;
 
 	void OnPaint(wxPaintEvent& paintEvent);
 	void OnMouseUp(wxMouseEvent& mouseEvent);

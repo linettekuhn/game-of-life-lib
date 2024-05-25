@@ -3,6 +3,7 @@
 #define TOOLBAR_NEXT_ICON_ID 10002
 #define TOOLBAR_PAUSE_ICON_ID 10003
 #define TOOLBAR_CLEAR_ICON_ID 10004
+#define MENUBAR_SETTINGS_ID 10005
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -16,6 +17,7 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(TOOLBAR_NEXT_ICON_ID, MainWindow::OnNextButtonClick)
 	EVT_MENU(TOOLBAR_PAUSE_ICON_ID, MainWindow::OnPauseButtonClick)
 	EVT_MENU(TOOLBAR_CLEAR_ICON_ID, MainWindow::OnClearButtonClick)
+	EVT_MENU(MENUBAR_SETTINGS_ID, MainWindow::OnSettingsButtonClick)
 	EVT_TIMER(TIMER_ID, MainWindow::OnTimerStart)
 wxEND_EVENT_TABLE()
 
@@ -140,10 +142,23 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 	UpdateStatusBar();
 	Refresh();
 }
+void MainWindow::OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent)
+{
+	SettingsDialog settingsDialog(this, mSettings);
+	int id = settingsDialog.ShowModal();
+	if (id == wxID_OK)
+	{
+		InitializeGameBoard();
+		Refresh();
+	}
+
+}
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), 
 pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings)), 
-pTimer(new wxTimer(this, TIMER_ID))
+pTimer(new wxTimer(this, TIMER_ID)),
+pMenuBar(new wxMenuBar()),
+pOptionsMenu(new wxMenu())
 {
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);
@@ -161,6 +176,11 @@ pTimer(new wxTimer(this, TIMER_ID))
 	pStatusBar = CreateStatusBar();
 	UpdateStatusBar();
 	wxFrame::SetStatusBarPane(-1);
+
+	SetMenuBar(pMenuBar);
+
+	pOptionsMenu->Append(MENUBAR_SETTINGS_ID, "Settings");
+	pMenuBar->Append(pOptionsMenu, "Options");
 
 	InitializeGameBoard();
 

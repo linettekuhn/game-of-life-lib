@@ -2,6 +2,7 @@
 #include "wx/wx.h"
 #include "DrawingPanel.h"
 #include "GameSettings.h"
+#include "SettingsDialog.h"
 
 class MainWindow : public wxFrame
 {
@@ -12,7 +13,10 @@ private:
 	int mLivingCellCount = 0;
 	wxStatusBar* pStatusBar;
 	wxToolBar* pToolBar;
+	wxMenuBar* pMenuBar;
+	wxMenu* pOptionsMenu;
 	wxTimer* pTimer;
+	
 	GameSettings mSettings;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
@@ -20,6 +24,7 @@ private:
 	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
 	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
 	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
+	void OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent);
 	void OnTimerStart(wxTimerEvent& timerEvent);
 
 	void NextGeneration();

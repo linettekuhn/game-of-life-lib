@@ -1,7 +1,7 @@
-#define GRID_SIZE_ID 10005
-#define INTERVAL_ID 10006
-#define DEAD_CELL_ID 10007
-#define LIVING_CELL_ID 10008
+#define GRID_SIZE_ID 20001
+#define INTERVAL_ID 20002
+#define DEAD_CELL_ID 20003
+#define LIVING_CELL_ID 20004
 
 #include "SettingsDialog.h"
 
@@ -12,18 +12,18 @@ wxEND_EVENT_TABLE()
 
 void SettingsDialog::LoadSettings()
 {
-	gridSizeCtrl->SetValue(mSettings.gridSize);
-	intervalCtrl->SetValue(mSettings.interval);
-	deadColorCtrl->SetColour(mSettings.GetDeadCellColor());
-	livingColorCtrl->SetColour(mSettings.GetLivingCellColor());
+	gridSizeCtrl->SetValue(rSettings.gridSize);
+	intervalCtrl->SetValue(rSettings.interval);
+	deadColorCtrl->SetColour(rSettings.GetDeadCellColor());
+	livingColorCtrl->SetColour(rSettings.GetLivingCellColor());
 }
 
 void SettingsDialog::SaveSettings()
 {
-	mSettings.gridSize = gridSizeCtrl->GetValue();
-	mSettings.interval = intervalCtrl->GetValue();
-	mSettings.SetDeadCellColor(deadColorCtrl->GetColour());
-	mSettings.SetLivingCellColor(livingColorCtrl->GetColour());
+	rSettings.gridSize = gridSizeCtrl->GetValue();
+	rSettings.interval = intervalCtrl->GetValue();
+	rSettings.SetDeadCellColor(deadColorCtrl->GetColour());
+	rSettings.SetLivingCellColor(livingColorCtrl->GetColour());
 }
 
 void SettingsDialog::OnOkButtonClick(wxCommandEvent& okButtonEvent)
@@ -37,12 +37,11 @@ void SettingsDialog::OnCancelButtonClick(wxCommandEvent& cancelButtonEvent)
 	EndModal(wxID_CANCEL);
 }
 
-SettingsDialog::SettingsDialog(wxWindow* mainWindowPtr) : wxDialog(mainWindowPtr, wxID_ANY, "Configure Settings"),
-pMainSizer(new wxBoxSizer(wxVERTICAL))
+SettingsDialog::SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings) : wxDialog(mainWindowPtr, wxID_ANY, "Configure Settings"),
+pMainSizer(new wxBoxSizer(wxVERTICAL)),
+rSettings(settings)
 {
 	SetSizer(pMainSizer);
-	
-	LoadSettings();
 	
 	wxBoxSizer* gridSizeSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* gridSizeLabel = new wxStaticText(this, wxID_ANY, "Grid Size");
@@ -77,6 +76,9 @@ pMainSizer(new wxBoxSizer(wxVERTICAL))
 	pMainSizer->Add(livingColorSizer);
 
 	wxSizer* confirmSizer = CreateButtonSizer(wxOK | wxCANCEL);
+	pMainSizer->Add(confirmSizer);
+
+	LoadSettings();
 }
 
 SettingsDialog::~SettingsDialog()

@@ -2,12 +2,14 @@
 #define INTERVAL_ID 20002
 #define DEAD_CELL_ID 20003
 #define LIVING_CELL_ID 20004
+#define RESET_SETTINGS_ID 20005
 
 #include "SettingsDialog.h"
 
 wxBEGIN_EVENT_TABLE(SettingsDialog, wxDialog)
 	EVT_BUTTON(wxID_OK, SettingsDialog::OnOkButtonClick)
 	EVT_BUTTON(wxID_CANCEL, SettingsDialog::OnCancelButtonClick)
+	EVT_BUTTON(RESET_SETTINGS_ID, SettingsDialog::OnResetSettingsButtonClick)
 wxEND_EVENT_TABLE()
 
 void SettingsDialog::LoadSettings()
@@ -39,9 +41,17 @@ void SettingsDialog::OnCancelButtonClick(wxCommandEvent& cancelButtonEvent)
 	EndModal(wxID_CANCEL);
 }
 
-SettingsDialog::SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings) : wxDialog(mainWindowPtr, wxID_ANY, "Configure Settings"),
-pMainSizer(new wxBoxSizer(wxVERTICAL)),
-rSettings(settings)
+void SettingsDialog::OnResetSettingsButtonClick(wxCommandEvent& resetButtonEvent)
+{
+	rSettings.RestoreSettings();
+	LoadSettings();
+	Refresh();
+}
+
+SettingsDialog::SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings) : 
+	wxDialog(mainWindowPtr, wxID_ANY, "Configure Settings"),
+	pMainSizer(new wxBoxSizer(wxVERTICAL)),
+	rSettings(settings)
 {
 	SetSizer(pMainSizer);
 	
@@ -76,6 +86,9 @@ rSettings(settings)
 	livingColorSizer->Add(livingColorLabel);
 	livingColorSizer->Add(livingColorCtrl);
 	pMainSizer->Add(livingColorSizer);
+
+	wxButton* resetSettingsButton = new wxButton(this, RESET_SETTINGS_ID, "Restore Default Settings");	
+	pMainSizer->Add(resetSettingsButton);
 
 	wxSizer* confirmSizer = CreateButtonSizer(wxOK | wxCANCEL);
 	pMainSizer->Add(confirmSizer);

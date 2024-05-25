@@ -19,6 +19,7 @@ private:
 	void SaveSettings();
 	void OnOkButtonClick(wxCommandEvent& okButtonEvent);
 	void OnCancelButtonClick(wxCommandEvent& cancelButtonEvent);
+	void OnResetSettingsButtonClick(wxCommandEvent& resetButtonEvent);
 public:
 	SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings);
 	~SettingsDialog();

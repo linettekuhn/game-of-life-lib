@@ -1,4 +1,5 @@
 #include "DrawingPanel.h"
+#include "MainWindow.h"
 
 wxBEGIN_EVENT_TABLE(DrawingPanel, wxPanel)
 	EVT_PAINT(DrawingPanel::OnPaint)
@@ -39,6 +40,32 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
 		}
 	}
+	
+	if (rSettings.isNeighborCountChecked)
+	{
+		graphicsContext->SetFont(wxFontInfo(cellHeight / 2), *wxRED);
+		for (int i = 0; i < rSettings.gridSize; i++)
+		{
+			for (int j = 0; j < rSettings.gridSize; j++)
+			{
+				int neighbors = rNeighborCounts[i][j];
+
+				if (neighbors == 0) { continue; }
+
+				wxString numberText(std::to_string(neighbors));
+
+				double textWidth;
+				double textHeight;
+
+				graphicsContext->GetTextExtent(numberText, &textWidth, &textHeight);
+
+				int x = (cellWidth * i) + (cellWidth / 2) - (textWidth / 2);
+				int y = (cellHeight * j) + (cellHeight / 2) - (textHeight / 2);
+
+				graphicsContext->DrawText(numberText, x, y);
+			}
+		}
+	}
 }
 
 void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
@@ -56,14 +83,14 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 	int rowIndex = mouseY / cellHeight;
 
 	// flip the boolean value of the cell clicked
-	rGameBoard[colIndex][rowIndex] = !(rGameBoard[colIndex][rowIndex]);
+	rGameBoard[colIndex][rowIndex] = !rGameBoard[colIndex][rowIndex];
+	
+	MainWindow* mainWindow = dynamic_cast<MainWindow*>(pMainWindow);
+
+	mainWindow->UpdateLivingCellCount(rGameBoard[colIndex][rowIndex]);
+	mainWindow->UpdateNeighborCount();
 
 	pMainWindow->Refresh();
-} 
-
-void DrawingPanel::SetGridSize(int& gridSize)
-{
-	rSettings.gridSize = gridSize;
 }
 
 void DrawingPanel::SetPanelSize(wxSize& panelSize)
@@ -71,10 +98,11 @@ void DrawingPanel::SetPanelSize(wxSize& panelSize)
 	SetSize(panelSize);
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings) : wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), 
-	mainWindow->GetSize()), 
-	rGameBoard(gameBoard), 
+DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts) : 
+	wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()),  
 	pMainWindow(mainWindow), 
+	rGameBoard(gameBoard),
+	rNeighborCounts(neighborCounts),
 	rSettings(settings)
 {
 	SetBackgroundStyle(wxBG_STYLE_PAINT); 

@@ -17,6 +17,8 @@ struct GameSettings
 	int gridSize = 15;
 	int interval = 50;
 
+	bool isNeighborCountChecked = false;
+
 	wxColor GetLivingCellColor()
 	{
 		return wxColor(livingCellRed, livingCellGreen, livingCellBlue, livingCellAlpha);
@@ -50,5 +52,24 @@ struct GameSettings
 		std::ofstream file("settings.bin", std::ios::out | std::ios::binary);
 		file.write((char*)this, sizeof(GameSettings));
 		file.close();
+	}
+	void RestoreSettings()
+	{
+		livingCellRed = 128;
+		livingCellGreen = 128;
+		livingCellBlue = 128;
+		livingCellAlpha = 255;
+
+		deadCellRed = 255;
+		deadCellGreen = 255;
+		deadCellBlue = 255;
+		deadCellAlpha = 255;
+
+		gridSize = 15;
+		interval = 50;
+
+		isNeighborCountChecked = false;
+
+		SaveSettingsFile();
 	}
 };

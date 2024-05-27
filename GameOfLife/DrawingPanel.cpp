@@ -16,7 +16,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 		return;
 	}
 	//set the pen (outline of shape) color
-	graphicsContext->SetPen(*wxLIGHT_GREY);
+	graphicsContext->SetPen(rSettings.GetGridLineColor());
 	
 	float cellWidth = GetSize().x / (float)rSettings.gridSize;
 	float cellHeight = GetSize().y / (float)rSettings.gridSize;

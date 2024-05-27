@@ -5,6 +5,8 @@
 #define TOOLBAR_CLEAR_ICON_ID 10004
 #define MENUBAR_SETTINGS_ID 10005
 #define MENUBAR_NEIGHBOR_ID 10006
+#define MENUBAR_RANDOM_TIME_ID 10007
+#define MENUBAR_RANDOM_SEED_ID 10008
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -14,13 +16,15 @@
 
 wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_SIZE(MainWindow::OnSizeChange)
+	EVT_TIMER(TIMER_ID, MainWindow::OnTimerStart)
 	EVT_MENU(TOOLBAR_PLAY_ICON_ID, MainWindow::OnPlayButtonClick)
 	EVT_MENU(TOOLBAR_NEXT_ICON_ID, MainWindow::OnNextButtonClick)
 	EVT_MENU(TOOLBAR_PAUSE_ICON_ID, MainWindow::OnPauseButtonClick)
 	EVT_MENU(TOOLBAR_CLEAR_ICON_ID, MainWindow::OnClearButtonClick)
 	EVT_MENU(MENUBAR_SETTINGS_ID, MainWindow::OnSettingsButtonClick)
 	EVT_MENU(MENUBAR_NEIGHBOR_ID, MainWindow::OnNeighborCountButtonClick)
-	EVT_TIMER(TIMER_ID, MainWindow::OnTimerStart)
+	EVT_MENU(MENUBAR_RANDOM_TIME_ID, MainWindow::OnRandomTimeButtonClick)
+	EVT_MENU(MENUBAR_RANDOM_SEED_ID, MainWindow::OnRandomSeedButtonClick)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -32,6 +36,11 @@ void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 	}
 	sizeEvent.Skip();
 	pDrawingPanel->Refresh();
+}
+
+void MainWindow::OnTimerStart(wxTimerEvent& timerEvent)
+{
+	NextGeneration();
 }
 
 void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
@@ -84,9 +93,41 @@ void MainWindow::OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonE
 	Refresh();
 }
 
-void MainWindow::OnTimerStart(wxTimerEvent& timerEvent)
+void MainWindow::OnRandomTimeButtonClick(wxCommandEvent& randomTimeButtonEvent)
 {
-	NextGeneration();
+	RandomizeGameBoard(time(NULL));
+}
+
+void MainWindow::OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent)
+{
+	long inputSeed = wxGetNumberFromUser("Enter a seed for the randomizer", "Seed:", "Custom Seed", time(NULL), 0, LONG_MAX, this);
+	if (!(inputSeed == -1))
+	{
+		RandomizeGameBoard(inputSeed);
+	}
+}
+
+void MainWindow::RandomizeGameBoard(int seed)
+{
+	mLivingCellCount = 0;
+	srand(seed);
+	for (int i = 0; i < mSettings.gridSize; i++)
+	{
+		for (int j = 0; j < mSettings.gridSize; j++)
+		{
+			if ((rand() % 100) < 45)
+			{
+				mGameBoard[i][j] = true;
+				mLivingCellCount++;
+			}
+			else
+			{
+				mGameBoard[i][j] = false;
+			}
+		}
+	}
+	UpdateNeighborCount();
+	Refresh();
 }
 
 void MainWindow::NextGeneration()
@@ -201,7 +242,7 @@ void MainWindow::Refresh(bool eraseBackground, const wxRect* rect)
 }
 
 MainWindow::MainWindow() : 
-	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)), 
+	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)),
 	pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings, mNeighborCounts)), 
 	pTimer(new wxTimer(this, TIMER_ID)),
 	pMenuBar(new wxMenuBar()),
@@ -234,6 +275,8 @@ MainWindow::MainWindow() :
 	pMenuBar->Append(pViewMenu, "View");
 
 	pOptionsMenu->Append(MENUBAR_SETTINGS_ID, "Settings");
+	pOptionsMenu->Append(MENUBAR_RANDOM_TIME_ID, "Randomize (time)");
+	pOptionsMenu->Append(MENUBAR_RANDOM_SEED_ID, "Randomize (seed)");
 	pMenuBar->Append(pOptionsMenu, "Options");
 
 	InitializeGameBoard();

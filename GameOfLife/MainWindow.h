@@ -1,5 +1,6 @@
 #pragma once
 #include "wx/wx.h"
+#include "wx/numdlg.h"
 #include "DrawingPanel.h"
 #include "GameSettings.h"
 #include "SettingsDialog.h"
@@ -23,14 +24,17 @@ private:
 	GameSettings mSettings;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
+	void OnTimerStart(wxTimerEvent& timerEvent);
 	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
 	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
 	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
 	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
 	void OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent);
 	void OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonEvent);
-	void OnTimerStart(wxTimerEvent& timerEvent);
+	void OnRandomTimeButtonClick(wxCommandEvent& randomTimeButtonEvent);
+	void OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent);
 
+	void RandomizeGameBoard(int seed);
 	void NextGeneration();
 	void InitializeGameBoard();
 	void UpdateStatusBar();

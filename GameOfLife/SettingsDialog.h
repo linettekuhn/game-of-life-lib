@@ -14,6 +14,7 @@ private:
 	wxSpinCtrl* intervalCtrl;
 	wxColourPickerCtrl* deadColorCtrl;
 	wxColourPickerCtrl* livingColorCtrl;
+	wxColourPickerCtrl* gridLineColorCtrl;
 
 	void LoadSettings();
 	void SaveSettings();

@@ -14,9 +14,14 @@ struct GameSettings
 	unsigned int deadCellBlue = 255;
 	unsigned int deadCellAlpha = 255;
 
+	unsigned int gridLineRed = 0;
+	unsigned int gridLineGreen = 0;
+	unsigned int gridLineBlue = 0;
+	unsigned int gridLineAlpha = 255;
+
 	int gridSize = 15;
 	int interval = 50;
-
+	
 	bool isNeighborCountChecked = false;
 
 	wxColor GetLivingCellColor()
@@ -26,6 +31,10 @@ struct GameSettings
 	wxColor GetDeadCellColor()
 	{
 		return wxColor(deadCellRed, deadCellGreen, deadCellBlue, deadCellAlpha);
+	}
+	wxColor GetGridLineColor()
+	{
+		return wxColor(gridLineRed, gridLineGreen, gridLineBlue, gridLineAlpha);
 	}
 	void SetLivingCellColor(const wxColor& color)
 	{
@@ -40,6 +49,13 @@ struct GameSettings
 		deadCellGreen = color.GetGreen();
 		deadCellBlue = color.GetBlue();
 		deadCellAlpha = color.GetAlpha();
+	}
+	void SetGridLineColor(const wxColor& color)
+	{
+		gridLineRed = color.GetRed();
+		gridLineGreen = color.GetGreen();
+		gridLineBlue = color.GetBlue();
+		gridLineAlpha = color.GetAlpha();
 	}
 	void LoadSettingsFile()
 	{
@@ -64,6 +80,11 @@ struct GameSettings
 		deadCellGreen = 255;
 		deadCellBlue = 255;
 		deadCellAlpha = 255;
+
+		gridLineRed = 0;
+		gridLineGreen = 0;
+		gridLineBlue = 0;
+		gridLineAlpha = 255;
 
 		gridSize = 15;
 		interval = 50;

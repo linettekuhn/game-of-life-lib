@@ -4,10 +4,12 @@
 #include "wx/dcbuffer.h"
 #include "GameSettings.h"
 
+class MainWindow;
+
 class DrawingPanel : public wxPanel
 {
 private:
-	wxWindow* pMainWindow;
+	MainWindow* pMainWindow;
 	std::vector<std::vector<bool>>& rGameBoard;
 	std::vector<std::vector<int>>& rNeighborCounts;
 	GameSettings& rSettings;
@@ -16,7 +18,7 @@ private:
 	void OnMouseUp(wxMouseEvent& mouseEvent);
 public:
 	void SetPanelSize(wxSize& panelSize);
-	DrawingPanel(wxWindow* mainWindowPtr, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts);
+	DrawingPanel(MainWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts);
 	~DrawingPanel();
 	wxDECLARE_EVENT_TABLE();
 };

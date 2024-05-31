@@ -38,16 +38,10 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 				graphicsContext->SetBrush(rSettings.GetDeadCellColor());
 			}
 			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
-		}
-	}
-	
-	if (rSettings.isNeighborCountChecked)
-	{
-		graphicsContext->SetFont(wxFontInfo(cellHeight / 2), *wxRED);
-		for (int i = 0; i < rSettings.gridSize; i++)
-		{
-			for (int j = 0; j < rSettings.gridSize; j++)
-			{
+			
+			if (rSettings.isNeighborCountChecked)
+			{	
+				graphicsContext->SetFont(wxFontInfo(16), *wxRED);
 				int neighbors = rNeighborCounts[i][j];
 
 				if (neighbors == 0) { continue; }
@@ -66,6 +60,8 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			}
 		}
 	}
+
+	delete graphicsContext;
 }
 
 void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
@@ -84,11 +80,6 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 
 	// flip the boolean value of the cell clicked
 	rGameBoard[colIndex][rowIndex] = !rGameBoard[colIndex][rowIndex];
-	
-	MainWindow* mainWindow = dynamic_cast<MainWindow*>(pMainWindow);
-
-	mainWindow->UpdateLivingCellCount(rGameBoard[colIndex][rowIndex]);
-	mainWindow->UpdateNeighborCount();
 
 	pMainWindow->Refresh();
 }
@@ -98,7 +89,7 @@ void DrawingPanel::SetPanelSize(wxSize& panelSize)
 	SetSize(panelSize);
 }
 
-DrawingPanel::DrawingPanel(wxWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts) : 
+DrawingPanel::DrawingPanel(MainWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts) :
 	wxPanel(mainWindow, wxID_ANY, wxPoint(0, 0), mainWindow->GetSize()),  
 	pMainWindow(mainWindow), 
 	rGameBoard(gameBoard),

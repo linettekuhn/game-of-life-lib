@@ -1,6 +1,7 @@
 #pragma once
 #include "wx/wx.h"
 #include "wx/numdlg.h"
+#include "wx/filedlg.h"
 #include "DrawingPanel.h"
 #include "GameSettings.h"
 #include "SettingsDialog.h"
@@ -16,10 +17,12 @@ private:
 	wxStatusBar* pStatusBar;
 	wxToolBar* pToolBar;
 	wxMenuBar* pMenuBar;
-	wxMenu* pOptionsMenu;
+	wxMenu* pFileMenu;
 	wxMenu* pViewMenu;
+	wxMenu* pOptionsMenu;
 	wxMenuItem* pNeighborCountMenuItem;
 	wxTimer* pTimer;
+	wxString mFilePath;
 	
 	GameSettings mSettings;
 
@@ -33,17 +36,22 @@ private:
 	void OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonEvent);
 	void OnRandomTimeButtonClick(wxCommandEvent& randomTimeButtonEvent);
 	void OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent);
+	void OnNewButtonClick(wxCommandEvent& newButtonEvent);
+	void OnOpenButtonClick(wxCommandEvent& openButtonEvent);
+	void OnSaveButtonClick(wxCommandEvent& saveButtonEvent);
+	void OnSaveAsButtonClick(wxCommandEvent& saveAsButtonEvent);
+	void OnExitButtonClick(wxCommandEvent& exitButtonEvent);
 
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();
 	void InitializeGameBoard();
+	int LivingNeighborCount(int& row, int& col);
 	void UpdateStatusBar();
 	void RefreshMenuItems();
-	int LivingNeighborCount(int& row, int& col);
-	void Refresh(bool eraseBackground = true, const wxRect* rect = NULL);
+	void UpdateCounts();
+	void ClearUniverse();
 public:
-	void UpdateLivingCellCount(bool isAlive);
-	void UpdateNeighborCount();
+	void Refresh(bool eraseBackground = true, const wxRect* rect = NULL);
 	MainWindow();
 	~MainWindow();
 	wxDECLARE_EVENT_TABLE();

@@ -3,10 +3,10 @@
 #define TOOLBAR_NEXT_ICON_ID 10002
 #define TOOLBAR_PAUSE_ICON_ID 10003
 #define TOOLBAR_CLEAR_ICON_ID 10004
-#define MENUBAR_SETTINGS_ID 10005
-#define MENUBAR_NEIGHBOR_ID 10006
-#define MENUBAR_RANDOM_TIME_ID 10007
-#define MENUBAR_RANDOM_SEED_ID 10008
+#define OPTIONSMENU_SETTINGS_ID 10005
+#define VIEWMENU_NEIGHBOR_ID 10006
+#define OPTIONSMENU_RANDOM_TIME_ID 10007
+#define OPTIONSMENU_RANDOM_SEED_ID 10008
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -21,10 +21,15 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(TOOLBAR_NEXT_ICON_ID, MainWindow::OnNextButtonClick)
 	EVT_MENU(TOOLBAR_PAUSE_ICON_ID, MainWindow::OnPauseButtonClick)
 	EVT_MENU(TOOLBAR_CLEAR_ICON_ID, MainWindow::OnClearButtonClick)
-	EVT_MENU(MENUBAR_SETTINGS_ID, MainWindow::OnSettingsButtonClick)
-	EVT_MENU(MENUBAR_NEIGHBOR_ID, MainWindow::OnNeighborCountButtonClick)
-	EVT_MENU(MENUBAR_RANDOM_TIME_ID, MainWindow::OnRandomTimeButtonClick)
-	EVT_MENU(MENUBAR_RANDOM_SEED_ID, MainWindow::OnRandomSeedButtonClick)
+	EVT_MENU(OPTIONSMENU_SETTINGS_ID, MainWindow::OnSettingsButtonClick)
+	EVT_MENU(VIEWMENU_NEIGHBOR_ID, MainWindow::OnNeighborCountButtonClick)
+	EVT_MENU(OPTIONSMENU_RANDOM_TIME_ID, MainWindow::OnRandomTimeButtonClick)
+	EVT_MENU(OPTIONSMENU_RANDOM_SEED_ID, MainWindow::OnRandomSeedButtonClick)
+	EVT_MENU(wxID_NEW, MainWindow::OnNewButtonClick)
+	EVT_MENU(wxID_OPEN, MainWindow::OnOpenButtonClick)
+	EVT_MENU(wxID_SAVE, MainWindow::OnSaveButtonClick)
+	EVT_MENU(wxID_SAVEAS, MainWindow::OnSaveAsButtonClick)
+	EVT_MENU(wxID_EXIT, MainWindow::OnExitButtonClick)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -61,16 +66,8 @@ void MainWindow::OnPauseButtonClick(wxCommandEvent& pauseButtonEvent)
 void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 {
 	pTimer->Stop();
-	for (int i = 0; i < mGameBoard.size(); i++)
-	{
-		for (int j = 0; j < mGameBoard[i].size(); j++)
-		{
-			mGameBoard[i][j] = false;
-			mNeighborCounts[i][j] = 0;
-		}
-	}
-	mLivingCellCount = 0;
-	mGenerationCount = 0;
+	ClearUniverse();
+	InitializeGameBoard();
 	Refresh();
 }
 
@@ -87,7 +84,6 @@ void MainWindow::OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent)
 
 void MainWindow::OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonEvent)
 {
-	UpdateNeighborCount();
 	mSettings.isNeighborCountChecked = pNeighborCountMenuItem->IsChecked();
 	mSettings.SaveSettingsFile();
 	Refresh();
@@ -107,9 +103,136 @@ void MainWindow::OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent)
 	}
 }
 
+void MainWindow::OnNewButtonClick(wxCommandEvent& newButtonEvent)
+{
+	pTimer->Stop();
+	ClearUniverse();
+	InitializeGameBoard();
+	Refresh();
+}
+
+void MainWindow::OnOpenButtonClick(wxCommandEvent& openButtonEvent)
+{
+	pTimer->Stop();
+	wxFileDialog openFileDialog(this, "Open Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+	int id = openFileDialog.ShowModal();
+	if (id == wxID_CANCEL)
+	{
+		return;
+	}
+
+	ClearUniverse();
+
+	int i = 0;
+	std::string buffer;
+	std::ifstream fileStream;
+	fileStream.open((std::string)openFileDialog.GetPath());
+	if (fileStream.is_open())
+	{
+		while (!fileStream.eof())
+		{
+			std::getline(fileStream, buffer);
+			if (buffer.size() == 0) { break; }
+
+			mSettings.gridSize = buffer.size();
+			if (mGameBoard.size() == 0)
+			{
+				InitializeGameBoard();
+			}
+
+			for (int j = 0; j < buffer.size(); j++)
+			{
+				if (buffer[j] == '*')
+				{
+					mGameBoard[i][j] = true;
+				}
+				else
+				{
+					mGameBoard[i][j] = false;
+				}
+			}
+			i++;
+		}
+		fileStream.close();
+	}
+	Refresh();
+}
+
+void MainWindow::OnSaveButtonClick(wxCommandEvent& saveButtonEvent)
+{
+	if (mFilePath == wxEmptyString)
+	{
+		wxFileDialog saveAsFileDialog(this, "Save Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		int id = saveAsFileDialog.ShowModal();
+		if (id == wxID_CANCEL)
+		{
+			return;
+		}
+		mFilePath = saveAsFileDialog.GetPath();
+	}
+	std::ofstream fileStream;
+	fileStream.open((std::string)mFilePath);
+	if (fileStream.is_open())
+	{
+		for (int i = 0; i < mSettings.gridSize; i++)
+		{
+			for (int j = 0; j < mSettings.gridSize; j++)
+			{
+				if (mGameBoard[i][j])
+				{
+					fileStream << '*';
+				}
+				else
+				{
+					fileStream << '.';
+				}
+			}
+			fileStream << '\n';
+		}
+		fileStream.close();
+	}
+}
+
+void MainWindow::OnSaveAsButtonClick(wxCommandEvent& saveButtonEvent)
+{
+	wxFileDialog saveAsFileDialog(this, "Save Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	int id = saveAsFileDialog.ShowModal();
+	if (id == wxID_CANCEL)
+	{
+		return;
+	}
+	mFilePath = saveAsFileDialog.GetPath();
+	
+	std::ofstream fileStream;
+	fileStream.open((std::string)mFilePath);
+	if (fileStream.is_open())
+	{
+		for (int i = 0; i < mSettings.gridSize; i++)
+		{
+			for (int j = 0; j < mSettings.gridSize; j++)
+			{
+				if (mGameBoard[i][j])
+				{
+					fileStream << '*';
+				}
+				else
+				{
+					fileStream << '.';
+				}
+			}
+			fileStream << '\n';
+		}
+		fileStream.close();
+	}
+}
+
+void MainWindow::OnExitButtonClick(wxCommandEvent& exitButtonEvent)
+{
+	Close();
+}
+
 void MainWindow::RandomizeGameBoard(int seed)
 {
-	mLivingCellCount = 0;
 	srand(seed);
 	for (int i = 0; i < mSettings.gridSize; i++)
 	{
@@ -118,7 +241,6 @@ void MainWindow::RandomizeGameBoard(int seed)
 			if ((rand() % 100) < 45)
 			{
 				mGameBoard[i][j] = true;
-				mLivingCellCount++;
 			}
 			else
 			{
@@ -126,13 +248,11 @@ void MainWindow::RandomizeGameBoard(int seed)
 			}
 		}
 	}
-	UpdateNeighborCount();
 	Refresh();
 }
 
 void MainWindow::NextGeneration()
 {
-	mLivingCellCount = 0;
 	mGenerationCount++;
 	std::vector<std::vector<bool>> sandbox;
 	sandbox.resize(mSettings.gridSize);
@@ -150,17 +270,14 @@ void MainWindow::NextGeneration()
 			if (isAlive && (neighborCount == 2 || neighborCount == 3))
 			{
 				sandbox[i][j] = true;
-				mLivingCellCount++;
 			}
 			else if (!isAlive && neighborCount == 3)
 			{
 				sandbox[i][j] = true;
-				mLivingCellCount++;
 			}
 		}
 	}
 	mGameBoard.swap(sandbox);
-	UpdateNeighborCount();
 	Refresh();
 }
 
@@ -173,18 +290,6 @@ void MainWindow::InitializeGameBoard()
 		mGameBoard[i].resize(mSettings.gridSize);
 		mNeighborCounts[i].resize(mSettings.gridSize);
 	}
-}
-
-void MainWindow::UpdateStatusBar()
-{
-	pStatusBar->SetFieldsCount(2);
-	pStatusBar->SetStatusText(wxString::Format("No. of Generations: %d", mGenerationCount), 0);
-	pStatusBar->SetStatusText(wxString::Format("Living Cell Count: %d", mLivingCellCount), 1);
-}
-
-void MainWindow::RefreshMenuItems()
-{
-	pNeighborCountMenuItem->Check(mSettings.isNeighborCountChecked);
 }
 
 int MainWindow::LivingNeighborCount(int& row, int& col)
@@ -211,34 +316,51 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 	return neighborCount;
 }
 
-void MainWindow::UpdateNeighborCount()
+void MainWindow::UpdateStatusBar()
 {
+	pStatusBar->SetFieldsCount(2);
+	pStatusBar->SetStatusText(wxString::Format("No. of Generations: %d", mGenerationCount), 0);
+	pStatusBar->SetStatusText(wxString::Format("Living Cell Count: %d", mLivingCellCount), 1);
+}
+
+void MainWindow::RefreshMenuItems()
+{
+	pNeighborCountMenuItem->Check(mSettings.isNeighborCountChecked);
+}
+
+void MainWindow::UpdateCounts()
+{
+	mLivingCellCount = 0;
 	for (int i = 0; i < mSettings.gridSize; i++)
 	{
 		for (int j = 0; j < mSettings.gridSize; j++)
 		{
 			mNeighborCounts[i][j] = LivingNeighborCount(j, i);
+			if (mGameBoard[i][j]) { mLivingCellCount++; }
 		}
 	}
 }
 
-void MainWindow::UpdateLivingCellCount(bool isAlive)
+void MainWindow::ClearUniverse()
 {
-	if (isAlive)
+	for (int i = 0; i < mGameBoard.size(); i++)
 	{
-		mLivingCellCount++;
+		mGameBoard[i].clear();
+		mNeighborCounts[i].clear();
 	}
-	else
-	{
-		mLivingCellCount--;
-	}
+	mGameBoard.clear();
+	mNeighborCounts.clear();
+
+	mLivingCellCount = 0;
+	mGenerationCount = 0;
 }
 
 void MainWindow::Refresh(bool eraseBackground, const wxRect* rect)
 {
-	wxFrame::Refresh(eraseBackground, rect);
+	UpdateCounts();
 	UpdateStatusBar();
 	RefreshMenuItems();
+	wxFrame::Refresh(eraseBackground, rect);
 }
 
 MainWindow::MainWindow() : 
@@ -246,10 +368,19 @@ MainWindow::MainWindow() :
 	pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings, mNeighborCounts)), 
 	pTimer(new wxTimer(this, TIMER_ID)),
 	pMenuBar(new wxMenuBar()),
+	pFileMenu(new wxMenu()),
+	pViewMenu(new wxMenu()),
 	pOptionsMenu(new wxMenu()),
-	pViewMenu(new wxMenu())
-{
+	mFilePath(wxEmptyString)
+{	
+	//status bar
+	pStatusBar = CreateStatusBar();
+	wxFrame::SetStatusBarPane(-1);
+
+	//load settings
 	mSettings.LoadSettingsFile();
+
+	//toolbar
 	wxBitmap playIcon(play_xpm);
 	wxBitmap nextIcon(next_xpm);
 	wxBitmap pauseIcon(pause_xpm);
@@ -263,22 +394,36 @@ MainWindow::MainWindow() :
 	pToolBar->AddTool(TOOLBAR_CLEAR_ICON_ID, "", clearIcon, "Clear");
 	pToolBar->Realize();
 
-	pStatusBar = CreateStatusBar();
-	wxFrame::SetStatusBarPane(-1);
-
+	//menu bar
 	SetMenuBar(pMenuBar);
 
-	pNeighborCountMenuItem = new wxMenuItem(pViewMenu, MENUBAR_NEIGHBOR_ID, "Show Neighbor Count", wxEmptyString, wxITEM_CHECK);
+	//file menu
+	pFileMenu->Append(wxID_NEW);
+	pFileMenu->Append(wxID_OPEN);
+	pFileMenu->Append(wxID_SAVE);
+	pFileMenu->Append(wxID_SAVEAS);
+	pFileMenu->Append(wxID_EXIT);
+
+	pMenuBar->Append(pFileMenu, "File");
+
+	//view menu
+	pNeighborCountMenuItem = new wxMenuItem(pViewMenu, VIEWMENU_NEIGHBOR_ID, "Show Neighbor Count", wxEmptyString, wxITEM_CHECK);
 	pNeighborCountMenuItem->SetCheckable(true);
 
 	pViewMenu->Append(pNeighborCountMenuItem);
 	pMenuBar->Append(pViewMenu, "View");
 
-	pOptionsMenu->Append(MENUBAR_SETTINGS_ID, "Settings");
-	pOptionsMenu->Append(MENUBAR_RANDOM_TIME_ID, "Randomize (time)");
-	pOptionsMenu->Append(MENUBAR_RANDOM_SEED_ID, "Randomize (seed)");
+	//options menu
+	pOptionsMenu->Append(OPTIONSMENU_SETTINGS_ID, "Settings");
+
+	wxMenu* randomSubMenu = new wxMenu();
+	randomSubMenu->Append(OPTIONSMENU_RANDOM_TIME_ID, "Randomize (time)");
+	randomSubMenu->Append(OPTIONSMENU_RANDOM_SEED_ID, "Randomize (seed)");
+	pOptionsMenu->AppendSubMenu(randomSubMenu, "Randomize");
+
 	pMenuBar->Append(pOptionsMenu, "Options");
 
+	//initialize gameboard
 	InitializeGameBoard();
 
 	Layout();

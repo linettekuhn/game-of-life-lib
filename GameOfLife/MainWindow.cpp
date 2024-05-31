@@ -9,6 +9,7 @@
 #define OPTIONSMENU_RANDOM_SEED_ID 10008
 #define VIEWMENU_FINITE_ID 10009
 #define VIEWMENU_TORODIAL_ID 10010
+#define FILEMENU_IMPORT_ID 10011
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -31,6 +32,7 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(wxID_OPEN, MainWindow::OnOpenButtonClick)
 	EVT_MENU(wxID_SAVE, MainWindow::OnSaveButtonClick)
 	EVT_MENU(wxID_SAVEAS, MainWindow::OnSaveAsButtonClick)
+	EVT_MENU(FILEMENU_IMPORT_ID, MainWindow::OnImportButtonClick)
 	EVT_MENU(wxID_EXIT, MainWindow::OnExitButtonClick)
 	EVT_MENU(VIEWMENU_FINITE_ID, MainWindow::OnFiniteButtonClick)
 	EVT_MENU(VIEWMENU_TORODIAL_ID, MainWindow::OnTorodialButtonClick)
@@ -162,6 +164,71 @@ void MainWindow::OnOpenButtonClick(wxCommandEvent& openButtonEvent)
 	Refresh();
 }
 
+void MainWindow::OnImportButtonClick(wxCommandEvent& importButtonEvent)
+{
+	pTimer->Stop();
+	wxFileDialog openFileDialog(this, "Import Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	int id = openFileDialog.ShowModal();
+	if (id == wxID_CANCEL)
+	{
+		return;
+	}
+
+	ClearUniverse();
+
+	int i = 0;
+	std::string buffer;
+	std::ifstream fileStream;
+	int numberOfRows = 0;
+	int numberOfColumns = 0;
+	
+	fileStream.open((std::string)openFileDialog.GetPath());
+	if (fileStream.is_open())
+	{
+		//calculate how many rows and columns there are in the imported file
+		while (!fileStream.eof())
+		{
+			std::getline(fileStream, buffer);
+			if (buffer.size() == 0) { break; }
+			numberOfRows = buffer.size();
+			numberOfColumns++;
+		}
+		//set the grid size to the largest number
+		mSettings.gridSize = std::max(numberOfColumns, numberOfRows);
+		fileStream.close();
+	}
+
+	fileStream.open((std::string)openFileDialog.GetPath());
+	if (fileStream.is_open())
+	{
+		while (!fileStream.eof())
+		{
+			std::getline(fileStream, buffer);
+			if (buffer.size() == 0) { break; }
+
+			if (mGameBoard.size() == 0)
+			{
+				InitializeGameBoard();
+			}
+
+			for (int j = 0; j < buffer.size(); j++)
+			{
+				if (buffer[j] == '*')
+				{
+					mGameBoard[i][j] = true;
+				}
+				else
+				{
+					mGameBoard[i][j] = false;
+				}
+			}
+			i++;
+		}
+		fileStream.close();
+	}
+	Refresh();
+}
+
 void MainWindow::OnSaveButtonClick(wxCommandEvent& saveButtonEvent)
 {
 	if (mFilePath == wxEmptyString)
@@ -232,6 +299,7 @@ void MainWindow::OnSaveAsButtonClick(wxCommandEvent& saveButtonEvent)
 
 void MainWindow::OnExitButtonClick(wxCommandEvent& exitButtonEvent)
 {
+	pTimer->Stop();
 	Close();
 }
 
@@ -439,10 +507,12 @@ MainWindow::MainWindow() :
 	//file menu
 	pFileMenu->Append(wxID_NEW);
 	pFileMenu->Append(wxID_OPEN);
+	pFileMenu->Append(FILEMENU_IMPORT_ID, "Import");
 	pFileMenu->Append(wxID_SAVE);
 	pFileMenu->Append(wxID_SAVEAS);
+	pFileMenu->AppendSeparator();
 	pFileMenu->Append(wxID_EXIT);
-
+	
 	pMenuBar->Append(pFileMenu, "File");
 
 	//view menu

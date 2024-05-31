@@ -42,6 +42,7 @@ private:
 	void OnOpenButtonClick(wxCommandEvent& openButtonEvent);
 	void OnSaveButtonClick(wxCommandEvent& saveButtonEvent);
 	void OnSaveAsButtonClick(wxCommandEvent& saveAsButtonEvent);
+	void OnImportButtonClick(wxCommandEvent& importButtonEvent);
 	void OnExitButtonClick(wxCommandEvent& exitButtonEvent);
 	void OnFiniteButtonClick(wxCommandEvent& finiteButtonEvent);
 	void OnTorodialButtonClick(wxCommandEvent& torodialButtonEvent);

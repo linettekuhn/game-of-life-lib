@@ -21,6 +21,8 @@ private:
 	wxMenu* pViewMenu;
 	wxMenu* pOptionsMenu;
 	wxMenuItem* pNeighborCountMenuItem;
+	wxMenuItem* pFiniteMenuItem;
+	wxMenuItem* pTorodialMenuItem;
 	wxTimer* pTimer;
 	wxString mFilePath;
 	
@@ -41,6 +43,8 @@ private:
 	void OnSaveButtonClick(wxCommandEvent& saveButtonEvent);
 	void OnSaveAsButtonClick(wxCommandEvent& saveAsButtonEvent);
 	void OnExitButtonClick(wxCommandEvent& exitButtonEvent);
+	void OnFiniteButtonClick(wxCommandEvent& finiteButtonEvent);
+	void OnTorodialButtonClick(wxCommandEvent& torodialButtonEvent);
 
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();

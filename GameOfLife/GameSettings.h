@@ -23,6 +23,7 @@ struct GameSettings
 	int interval = 50;
 	
 	bool isNeighborCountChecked = false;
+	bool isTorodialChecked = false;
 
 	wxColor GetLivingCellColor()
 	{
@@ -90,6 +91,7 @@ struct GameSettings
 		interval = 50;
 
 		isNeighborCountChecked = false;
+		isTorodialChecked = false;
 
 		SaveSettingsFile();
 	}

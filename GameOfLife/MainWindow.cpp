@@ -7,6 +7,8 @@
 #define VIEWMENU_NEIGHBOR_ID 10006
 #define OPTIONSMENU_RANDOM_TIME_ID 10007
 #define OPTIONSMENU_RANDOM_SEED_ID 10008
+#define VIEWMENU_FINITE_ID 10009
+#define VIEWMENU_TORODIAL_ID 10010
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -30,6 +32,8 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(wxID_SAVE, MainWindow::OnSaveButtonClick)
 	EVT_MENU(wxID_SAVEAS, MainWindow::OnSaveAsButtonClick)
 	EVT_MENU(wxID_EXIT, MainWindow::OnExitButtonClick)
+	EVT_MENU(VIEWMENU_FINITE_ID, MainWindow::OnFiniteButtonClick)
+	EVT_MENU(VIEWMENU_TORODIAL_ID, MainWindow::OnTorodialButtonClick)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -231,6 +235,20 @@ void MainWindow::OnExitButtonClick(wxCommandEvent& exitButtonEvent)
 	Close();
 }
 
+void MainWindow::OnFiniteButtonClick(wxCommandEvent& finiteButtonEvent)
+{
+	mSettings.isTorodialChecked = false;
+	mSettings.SaveSettingsFile();
+	Refresh();
+}
+
+void MainWindow::OnTorodialButtonClick(wxCommandEvent& torodialButtonEvent)
+{
+	mSettings.isTorodialChecked = true;
+	mSettings.SaveSettingsFile();
+	Refresh();
+}
+
 void MainWindow::RandomizeGameBoard(int seed)
 {
 	srand(seed);
@@ -295,6 +313,7 @@ void MainWindow::InitializeGameBoard()
 int MainWindow::LivingNeighborCount(int& row, int& col)
 {
 	int neighborCount = 0;
+	
 	for (int i = -1; i < 2; i++)
 	{
 		for (int j = -1; j < 2; j++)
@@ -302,15 +321,33 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 			int cellRow = row + j;
 			int cellCol = col + i;
 			
+			if (mSettings.isTorodialChecked)
+			{
+				if (cellRow == -1)
+				{
+					cellRow = mSettings.gridSize - 1;
+				}
+				if (cellCol == -1)
+				{
+					cellCol = mSettings.gridSize - 1;
+				}
+				if (cellRow == mSettings.gridSize)
+				{
+					cellRow = 0;
+				}
+				if (cellCol == mSettings.gridSize)
+				{
+					cellCol = 0;
+				}
+			}
+
 			if (i == 0 && j == 0) { continue; }
 			if (cellRow < 0 || cellCol < 0) { continue; }
 			if (cellRow >= mSettings.gridSize || cellCol >= mSettings.gridSize) { continue; }
-		
 			if (mGameBoard[cellCol][cellRow])
 			{
 				neighborCount++;
 			}
-
 		}
 	}
 	return neighborCount;
@@ -326,6 +363,8 @@ void MainWindow::UpdateStatusBar()
 void MainWindow::RefreshMenuItems()
 {
 	pNeighborCountMenuItem->Check(mSettings.isNeighborCountChecked);
+	pFiniteMenuItem->Check(!(mSettings.isTorodialChecked));
+	pTorodialMenuItem->Check(mSettings.isTorodialChecked);
 }
 
 void MainWindow::UpdateCounts()
@@ -409,8 +448,19 @@ MainWindow::MainWindow() :
 	//view menu
 	pNeighborCountMenuItem = new wxMenuItem(pViewMenu, VIEWMENU_NEIGHBOR_ID, "Show Neighbor Count", wxEmptyString, wxITEM_CHECK);
 	pNeighborCountMenuItem->SetCheckable(true);
-
+	
 	pViewMenu->Append(pNeighborCountMenuItem);
+
+	wxMenu* universeTypeSubMenu = new wxMenu();
+	pFiniteMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_FINITE_ID, "Finite", wxEmptyString, wxITEM_CHECK);
+	pFiniteMenuItem->SetCheckable(true);
+	pTorodialMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_TORODIAL_ID, "Torodial", wxEmptyString, wxITEM_CHECK);
+	pTorodialMenuItem->SetCheckable(true);
+
+	universeTypeSubMenu->Append(pFiniteMenuItem);
+	universeTypeSubMenu->Append(pTorodialMenuItem);
+	pViewMenu->AppendSubMenu(universeTypeSubMenu, "Universe Type");
+
 	pMenuBar->Append(pViewMenu, "View");
 
 	//options menu

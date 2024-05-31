@@ -491,7 +491,7 @@ void MainWindow::Refresh(bool eraseBackground, const wxRect* rect)
 }
 
 MainWindow::MainWindow() : 
-	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(500, 500)),
+	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(700, 800)),
 	pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings, mNeighborCounts)), 
 	pTimer(new wxTimer(this, TIMER_ID)),
 	pMenuBar(new wxMenuBar()),

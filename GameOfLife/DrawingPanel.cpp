@@ -59,6 +59,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			}
 			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth + 1, cellHeight + 1);
 			
+			//show each cell's neighbor count if option is checked
 			if (rSettings.isNeighborCountChecked)
 			{	
 				graphicsContext->SetFont(wxFontInfo(16), *wxRED);
@@ -80,18 +81,21 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			}
 		}
 	}
-	
-	//draw thick lines
-	int solidLines = rSettings.gridSize / 10;
-	dc.SetPen(rSettings.GetGridLineColor());
-	for (int i = 1; i <= solidLines; i++)
+
+	//draw 10x10 grid if option is checked
+	if (rSettings.isShowThickGridChecked)
 	{
-		wxPoint verticalStart(cellWidth * i * 10, 0); 
-		wxPoint verticalEnd(cellWidth * i * 10, GetSize().y);
-		dc.DrawLine(verticalStart, verticalEnd);
-		wxPoint horizontalStart(0, cellHeight * i * 10);
-		wxPoint horizontalEnd(GetSize().x, cellHeight * i * 10);
-		dc.DrawLine(horizontalStart, horizontalEnd);
+		int solidLines = rSettings.gridSize / 10;
+		dc.SetPen(rSettings.GetGridLineColor());
+		for (int i = 1; i <= solidLines; i++)
+		{
+			wxPoint verticalStart(cellWidth * i * 10, 0); 
+			wxPoint verticalEnd(cellWidth * i * 10, GetSize().y);
+			dc.DrawLine(verticalStart, verticalEnd);
+			wxPoint horizontalStart(0, cellHeight * i * 10);
+			wxPoint horizontalEnd(GetSize().x, cellHeight * i * 10);
+			dc.DrawLine(horizontalStart, horizontalEnd);
+		}
 	}
 
 	delete graphicsContext;

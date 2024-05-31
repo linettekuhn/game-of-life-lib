@@ -23,6 +23,8 @@ private:
 	wxMenuItem* pNeighborCountMenuItem;
 	wxMenuItem* pFiniteMenuItem;
 	wxMenuItem* pTorodialMenuItem;
+	wxMenuItem* pShowGridMenuItem;
+	wxMenuItem* pShowThickGridMenuItem;
 	wxTimer* pTimer;
 	wxString mFilePath;
 	
@@ -30,22 +32,24 @@ private:
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
 	void OnTimerStart(wxTimerEvent& timerEvent);
-	void OnPlayButtonClick(wxCommandEvent& playButtonEvent);
-	void OnNextButtonClick(wxCommandEvent& nextButtonEvent);
-	void OnPauseButtonClick(wxCommandEvent& pauseButtonEvent);
-	void OnClearButtonClick(wxCommandEvent& clearButtonEvent);
-	void OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent);
-	void OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonEvent);
-	void OnRandomTimeButtonClick(wxCommandEvent& randomTimeButtonEvent);
-	void OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent);
-	void OnNewButtonClick(wxCommandEvent& newButtonEvent);
-	void OnOpenButtonClick(wxCommandEvent& openButtonEvent);
-	void OnSaveButtonClick(wxCommandEvent& saveButtonEvent);
-	void OnSaveAsButtonClick(wxCommandEvent& saveAsButtonEvent);
-	void OnImportButtonClick(wxCommandEvent& importButtonEvent);
-	void OnExitButtonClick(wxCommandEvent& exitButtonEvent);
-	void OnFiniteButtonClick(wxCommandEvent& finiteButtonEvent);
-	void OnTorodialButtonClick(wxCommandEvent& torodialButtonEvent);
+	void OnPlayButtonClick(wxCommandEvent& buttonEvent);
+	void OnNextButtonClick(wxCommandEvent& buttonEvent);
+	void OnPauseButtonClick(wxCommandEvent& buttonEvent);
+	void OnClearButtonClick(wxCommandEvent& buttonEvent);
+	void OnSettingsButtonClick(wxCommandEvent& buttonEvent);
+	void OnNeighborCountButtonClick(wxCommandEvent& buttonEvent);
+	void OnRandomTimeButtonClick(wxCommandEvent& buttonEvent);
+	void OnRandomSeedButtonClick(wxCommandEvent& buttonEvent);
+	void OnNewButtonClick(wxCommandEvent& buttonEvent);
+	void OnOpenButtonClick(wxCommandEvent& buttonEvent);
+	void OnSaveButtonClick(wxCommandEvent& buttonEvent);
+	void OnSaveAsButtonClick(wxCommandEvent& buttonEvent);
+	void OnImportButtonClick(wxCommandEvent& buttonEvent);
+	void OnExitButtonClick(wxCommandEvent& buttonEvent);
+	void OnFiniteButtonClick(wxCommandEvent& buttonEvent);
+	void OnTorodialButtonClick(wxCommandEvent& buttonEvent);
+	void OnShowGridButtonClick(wxCommandEvent& buttonEvent);
+	void OnShowThickGridButtonClick(wxCommandEvent& buttonEvent);
 
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();

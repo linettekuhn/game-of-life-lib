@@ -19,11 +19,13 @@ struct GameSettings
 	unsigned int gridLineBlue = 0;
 	unsigned int gridLineAlpha = 255;
 
-	int gridSize = 15;
+	int gridSize = 30;
 	int interval = 50;
 	
-	bool isNeighborCountChecked = false;
+	bool isNeighborCountChecked = true;
 	bool isTorodialChecked = false;
+	bool isShowGridChecked = true;
+	bool isShowThickGridChecked = true;
 
 	wxColor GetLivingCellColor()
 	{
@@ -87,11 +89,13 @@ struct GameSettings
 		gridLineBlue = 0;
 		gridLineAlpha = 255;
 
-		gridSize = 15;
+		gridSize = 30;
 		interval = 50;
 
-		isNeighborCountChecked = false;
+		isNeighborCountChecked = true;
 		isTorodialChecked = false;
+		isShowGridChecked = true;
+		isShowThickGridChecked = true;
 
 		SaveSettingsFile();
 	}

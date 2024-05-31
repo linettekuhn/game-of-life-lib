@@ -10,6 +10,8 @@
 #define VIEWMENU_FINITE_ID 10009
 #define VIEWMENU_TORODIAL_ID 10010
 #define FILEMENU_IMPORT_ID 10011
+#define VIEWMENU_SHOW_GRID_ID 10012
+#define VIEWMENU_SHOW_THICK_GRID_ID 10013
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -36,6 +38,8 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(wxID_EXIT, MainWindow::OnExitButtonClick)
 	EVT_MENU(VIEWMENU_FINITE_ID, MainWindow::OnFiniteButtonClick)
 	EVT_MENU(VIEWMENU_TORODIAL_ID, MainWindow::OnTorodialButtonClick)
+	EVT_MENU(VIEWMENU_SHOW_GRID_ID, MainWindow::OnShowGridButtonClick)
+	EVT_MENU(VIEWMENU_SHOW_THICK_GRID_ID, MainWindow::OnShowThickGridButtonClick)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -54,22 +58,22 @@ void MainWindow::OnTimerStart(wxTimerEvent& timerEvent)
 	NextGeneration();
 }
 
-void MainWindow::OnPlayButtonClick(wxCommandEvent& playButtonEvent)
+void MainWindow::OnPlayButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Start(mSettings.interval);
 }
 
-void MainWindow::OnNextButtonClick(wxCommandEvent& nextButtonEvent)
+void MainWindow::OnNextButtonClick(wxCommandEvent& buttonEvent)
 {
 	NextGeneration();
 }
 
-void MainWindow::OnPauseButtonClick(wxCommandEvent& pauseButtonEvent)
+void MainWindow::OnPauseButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 }
 
-void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
+void MainWindow::OnClearButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 	ClearUniverse();
@@ -77,7 +81,7 @@ void MainWindow::OnClearButtonClick(wxCommandEvent& clearButtonEvent)
 	Refresh();
 }
 
-void MainWindow::OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent)
+void MainWindow::OnSettingsButtonClick(wxCommandEvent& buttonEvent)
 {
 	SettingsDialog settingsDialog(this, mSettings);
 	int id = settingsDialog.ShowModal();
@@ -88,19 +92,19 @@ void MainWindow::OnSettingsButtonClick(wxCommandEvent& settingsButtonEvent)
 	}
 }
 
-void MainWindow::OnNeighborCountButtonClick(wxCommandEvent& neighborCountButtonEvent)
+void MainWindow::OnNeighborCountButtonClick(wxCommandEvent& buttonEvent)
 {
 	mSettings.isNeighborCountChecked = pNeighborCountMenuItem->IsChecked();
 	mSettings.SaveSettingsFile();
 	Refresh();
 }
 
-void MainWindow::OnRandomTimeButtonClick(wxCommandEvent& randomTimeButtonEvent)
+void MainWindow::OnRandomTimeButtonClick(wxCommandEvent& buttonEvent)
 {
 	RandomizeGameBoard(time(NULL));
 }
 
-void MainWindow::OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent)
+void MainWindow::OnRandomSeedButtonClick(wxCommandEvent& buttonEvent)
 {
 	long inputSeed = wxGetNumberFromUser("Enter a seed for the randomizer", "Seed:", "Custom Seed", time(NULL), 0, LONG_MAX, this);
 	if (!(inputSeed == -1))
@@ -109,7 +113,7 @@ void MainWindow::OnRandomSeedButtonClick(wxCommandEvent& randomSeedButtonEvent)
 	}
 }
 
-void MainWindow::OnNewButtonClick(wxCommandEvent& newButtonEvent)
+void MainWindow::OnNewButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 	ClearUniverse();
@@ -117,7 +121,7 @@ void MainWindow::OnNewButtonClick(wxCommandEvent& newButtonEvent)
 	Refresh();
 }
 
-void MainWindow::OnOpenButtonClick(wxCommandEvent& openButtonEvent)
+void MainWindow::OnOpenButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 	wxFileDialog openFileDialog(this, "Open Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
@@ -164,7 +168,7 @@ void MainWindow::OnOpenButtonClick(wxCommandEvent& openButtonEvent)
 	Refresh();
 }
 
-void MainWindow::OnImportButtonClick(wxCommandEvent& importButtonEvent)
+void MainWindow::OnImportButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 	wxFileDialog openFileDialog(this, "Import Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -229,7 +233,7 @@ void MainWindow::OnImportButtonClick(wxCommandEvent& importButtonEvent)
 	Refresh();
 }
 
-void MainWindow::OnSaveButtonClick(wxCommandEvent& saveButtonEvent)
+void MainWindow::OnSaveButtonClick(wxCommandEvent& buttonEvent)
 {
 	if (mFilePath == wxEmptyString)
 	{
@@ -264,7 +268,7 @@ void MainWindow::OnSaveButtonClick(wxCommandEvent& saveButtonEvent)
 	}
 }
 
-void MainWindow::OnSaveAsButtonClick(wxCommandEvent& saveButtonEvent)
+void MainWindow::OnSaveAsButtonClick(wxCommandEvent& buttonEvent)
 {
 	wxFileDialog saveAsFileDialog(this, "Save Game of Life cells file", wxEmptyString, wxEmptyString, "Game of Life File (*.cells)|*.cells", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 	int id = saveAsFileDialog.ShowModal();
@@ -297,22 +301,36 @@ void MainWindow::OnSaveAsButtonClick(wxCommandEvent& saveButtonEvent)
 	}
 }
 
-void MainWindow::OnExitButtonClick(wxCommandEvent& exitButtonEvent)
+void MainWindow::OnExitButtonClick(wxCommandEvent& buttonEvent)
 {
 	pTimer->Stop();
 	Close();
 }
 
-void MainWindow::OnFiniteButtonClick(wxCommandEvent& finiteButtonEvent)
+void MainWindow::OnFiniteButtonClick(wxCommandEvent& buttonEvent)
 {
 	mSettings.isTorodialChecked = false;
 	mSettings.SaveSettingsFile();
 	Refresh();
 }
 
-void MainWindow::OnTorodialButtonClick(wxCommandEvent& torodialButtonEvent)
+void MainWindow::OnTorodialButtonClick(wxCommandEvent& buttonEvent)
 {
 	mSettings.isTorodialChecked = true;
+	mSettings.SaveSettingsFile();
+	Refresh();
+}
+
+void MainWindow::OnShowGridButtonClick(wxCommandEvent& buttonEvent)
+{
+	mSettings.isShowGridChecked = pShowGridMenuItem->IsChecked();
+	mSettings.SaveSettingsFile();
+	Refresh();
+}
+
+void MainWindow::OnShowThickGridButtonClick(wxCommandEvent& buttonEvent)
+{
+	mSettings.isShowThickGridChecked = pShowThickGridMenuItem->IsChecked();
 	mSettings.SaveSettingsFile();
 	Refresh();
 }
@@ -433,6 +451,8 @@ void MainWindow::RefreshMenuItems()
 	pNeighborCountMenuItem->Check(mSettings.isNeighborCountChecked);
 	pFiniteMenuItem->Check(!(mSettings.isTorodialChecked));
 	pTorodialMenuItem->Check(mSettings.isTorodialChecked);
+	pShowGridMenuItem->Check(mSettings.isShowGridChecked);
+	pShowThickGridMenuItem->Check(mSettings.isShowThickGridChecked);
 }
 
 void MainWindow::UpdateCounts()
@@ -526,10 +546,20 @@ MainWindow::MainWindow() :
 	pFiniteMenuItem->SetCheckable(true);
 	pTorodialMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_TORODIAL_ID, "Torodial", wxEmptyString, wxITEM_CHECK);
 	pTorodialMenuItem->SetCheckable(true);
-
 	universeTypeSubMenu->Append(pFiniteMenuItem);
 	universeTypeSubMenu->Append(pTorodialMenuItem);
+	
 	pViewMenu->AppendSubMenu(universeTypeSubMenu, "Universe Type");
+
+	wxMenu* gridViewSubMenu = new wxMenu();
+	pShowGridMenuItem = new wxMenuItem(gridViewSubMenu, VIEWMENU_SHOW_GRID_ID, "Show Grid", wxEmptyString, wxITEM_CHECK);
+	pShowGridMenuItem->SetCheckable(true);
+	pShowThickGridMenuItem = new wxMenuItem(gridViewSubMenu, VIEWMENU_SHOW_THICK_GRID_ID, "Show 10x10 Grid", wxEmptyString, wxITEM_CHECK);
+	pShowThickGridMenuItem->SetCheckable(true);
+	gridViewSubMenu->Append(pShowGridMenuItem);
+	gridViewSubMenu->Append(pShowThickGridMenuItem);
+
+	pViewMenu->AppendSubMenu(gridViewSubMenu, "Grid View");
 
 	pMenuBar->Append(pViewMenu, "View");
 

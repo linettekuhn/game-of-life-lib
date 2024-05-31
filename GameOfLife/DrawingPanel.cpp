@@ -15,11 +15,11 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 	{
 		return;
 	}
-	//set the pen (outline of shape) color
-	graphicsContext->SetPen(rSettings.GetGridLineColor());
-	
+
 	float cellWidth = GetSize().x / (float)rSettings.gridSize;
 	float cellHeight = GetSize().y / (float)rSettings.gridSize;
+
+	wxColor gridLineColor = rSettings.GetGridLineColor();
 
 	//draw grid by drawing rectangles with loops
 	for (int i = 0; i < rSettings.gridSize; i++)
@@ -27,17 +27,37 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 		for (int j = 0; j < rSettings.gridSize; j++)
 		{
 			bool isAlive = rGameBoard[i][j];
+
+			//make grid line color less opaque
+			gridLineColor.Set(gridLineColor.Red(), gridLineColor.Green(), gridLineColor.Blue(), 100);
+
 			if (isAlive)
 			{
 				//set the brush (fill of shape) to alive color
 				graphicsContext->SetBrush(rSettings.GetLivingCellColor());
+				if (rSettings.isShowGridChecked)
+				{
+					graphicsContext->SetPen(gridLineColor);
+				}
+				else
+				{
+					graphicsContext->SetPen(rSettings.GetLivingCellColor());
+				}
 			}
 			else
 			{
 				//set the brush (fill of shape) to dead color
 				graphicsContext->SetBrush(rSettings.GetDeadCellColor());
+				if (rSettings.isShowGridChecked)
+				{
+					graphicsContext->SetPen(gridLineColor);
+				}
+				else
+				{
+					graphicsContext->SetPen(rSettings.GetDeadCellColor());
+				}
 			}
-			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+			graphicsContext->DrawRectangle(i * cellWidth, j * cellHeight, cellWidth + 1, cellHeight + 1);
 			
 			if (rSettings.isNeighborCountChecked)
 			{	
@@ -60,6 +80,20 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			}
 		}
 	}
+	
+	//draw thick lines
+	int solidLines = rSettings.gridSize / 10;
+	dc.SetPen(rSettings.GetGridLineColor());
+	for (int i = 1; i <= solidLines; i++)
+	{
+		wxPoint verticalStart(cellWidth * i * 10, 0); 
+		wxPoint verticalEnd(cellWidth * i * 10, GetSize().y);
+		dc.DrawLine(verticalStart, verticalEnd);
+		wxPoint horizontalStart(0, cellHeight * i * 10);
+		wxPoint horizontalEnd(GetSize().x, cellHeight * i * 10);
+		dc.DrawLine(horizontalStart, horizontalEnd);
+	}
+
 	delete graphicsContext;
 }
 

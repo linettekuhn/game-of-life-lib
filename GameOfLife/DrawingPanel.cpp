@@ -60,7 +60,6 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			}
 		}
 	}
-
 	delete graphicsContext;
 }
 

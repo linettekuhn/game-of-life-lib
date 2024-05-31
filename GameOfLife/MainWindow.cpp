@@ -477,7 +477,7 @@ MainWindow::MainWindow() :
 	InitializeGameBoard();
 
 	Layout();
-
+ 
 	Refresh();
 }
 

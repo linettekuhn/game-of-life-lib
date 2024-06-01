@@ -18,7 +18,7 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 
 	float cellWidth = GetSize().x / (float)rSettings.gridSize;
 	float cellHeight = GetSize().y / (float)rSettings.gridSize;
-
+	
 	wxColor gridLineColor = rSettings.GetGridLineColor();
 
 	//draw grid by drawing rectangles with loops
@@ -62,7 +62,8 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			//show each cell's neighbor count if option is checked
 			if (rSettings.isNeighborCountChecked)
 			{	
-				graphicsContext->SetFont(wxFontInfo(16), *wxRED);
+				float fontSize = std::min(cellHeight, cellHeight) / 2;
+				graphicsContext->SetFont(wxFontInfo(fontSize), *wxRED);
 				int neighbors = rNeighborCounts[i][j];
 
 				if (neighbors == 0) { continue; }
@@ -96,6 +97,26 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 			wxPoint horizontalEnd(GetSize().x, cellHeight * i * 10);
 			dc.DrawLine(horizontalStart, horizontalEnd);
 		}
+	}
+
+	//display HUD if option is checked
+	if (rSettings.isHUDChecked)
+	{
+		float fontSize = std::min(GetSize().x, GetSize().y) / 35;
+
+		graphicsContext->SetFont(wxFontInfo(fontSize), *wxRED);
+
+		wxString HUDText(wxString::Format("Boundary type: %s\nGame Board Size: %i x%i\nTimer Interval: %i ms", 
+			(rSettings.isTorodialChecked ? ("Torodial") : ("Finite")), 
+			rSettings.gridSize, 
+			rSettings.gridSize, 
+			rSettings.interval));
+
+		double textWidth;
+		double textHeight;
+
+		graphicsContext->GetTextExtent(HUDText, &textWidth, &textHeight);
+		graphicsContext->DrawText(HUDText, 10, GetSize().y - textHeight - 10);
 	}
 
 	delete graphicsContext;

@@ -25,9 +25,9 @@ private:
 	wxMenuItem* pTorodialMenuItem;
 	wxMenuItem* pShowGridMenuItem;
 	wxMenuItem* pShowThickGridMenuItem;
+	wxMenuItem* pHUDMenuItem;
 	wxTimer* pTimer;
 	wxString mFilePath;
-	
 	GameSettings mSettings;
 
 	void OnSizeChange(wxSizeEvent& sizeEvent);
@@ -50,6 +50,7 @@ private:
 	void OnTorodialButtonClick(wxCommandEvent& buttonEvent);
 	void OnShowGridButtonClick(wxCommandEvent& buttonEvent);
 	void OnShowThickGridButtonClick(wxCommandEvent& buttonEvent);
+	void OnHUDButtonClick(wxCommandEvent& buttonEvent);
 
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();

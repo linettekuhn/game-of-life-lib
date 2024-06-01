@@ -12,6 +12,7 @@
 #define FILEMENU_IMPORT_ID 10011
 #define VIEWMENU_SHOW_GRID_ID 10012
 #define VIEWMENU_SHOW_THICK_GRID_ID 10013
+#define VIEWMENU_HUD_ID 10014
 
 #include "MainWindow.h"
 #include "play.xpm"
@@ -40,6 +41,7 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(VIEWMENU_TORODIAL_ID, MainWindow::OnTorodialButtonClick)
 	EVT_MENU(VIEWMENU_SHOW_GRID_ID, MainWindow::OnShowGridButtonClick)
 	EVT_MENU(VIEWMENU_SHOW_THICK_GRID_ID, MainWindow::OnShowThickGridButtonClick)
+	EVT_MENU(VIEWMENU_HUD_ID, MainWindow::OnHUDButtonClick)
 wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
@@ -335,6 +337,13 @@ void MainWindow::OnShowThickGridButtonClick(wxCommandEvent& buttonEvent)
 	Refresh();
 }
 
+void MainWindow::OnHUDButtonClick(wxCommandEvent& buttonEvent)
+{
+	mSettings.isHUDChecked = pHUDMenuItem->IsChecked();
+	mSettings.SaveSettingsFile();
+	Refresh();
+}
+
 void MainWindow::RandomizeGameBoard(int seed)
 {
 	srand(seed);
@@ -453,6 +462,7 @@ void MainWindow::RefreshMenuItems()
 	pTorodialMenuItem->Check(mSettings.isTorodialChecked);
 	pShowGridMenuItem->Check(mSettings.isShowGridChecked);
 	pShowThickGridMenuItem->Check(mSettings.isShowThickGridChecked);
+	pHUDMenuItem->Check(mSettings.isHUDChecked);
 }
 
 void MainWindow::UpdateCounts()
@@ -536,6 +546,11 @@ MainWindow::MainWindow() :
 	pMenuBar->Append(pFileMenu, "File");
 
 	//view menu
+	pHUDMenuItem = new wxMenuItem(pViewMenu, VIEWMENU_HUD_ID, "Show HUD", wxEmptyString, wxITEM_CHECK);
+	pHUDMenuItem->SetCheckable(true);
+
+	pViewMenu->Append(pHUDMenuItem);
+
 	pNeighborCountMenuItem = new wxMenuItem(pViewMenu, VIEWMENU_NEIGHBOR_ID, "Show Neighbor Count", wxEmptyString, wxITEM_CHECK);
 	pNeighborCountMenuItem->SetCheckable(true);
 	
@@ -549,7 +564,7 @@ MainWindow::MainWindow() :
 	universeTypeSubMenu->Append(pFiniteMenuItem);
 	universeTypeSubMenu->Append(pTorodialMenuItem);
 	
-	pViewMenu->AppendSubMenu(universeTypeSubMenu, "Universe Type");
+	pViewMenu->AppendSubMenu(universeTypeSubMenu, "Boundary Type");
 
 	wxMenu* gridViewSubMenu = new wxMenu();
 	pShowGridMenuItem = new wxMenuItem(gridViewSubMenu, VIEWMENU_SHOW_GRID_ID, "Show Grid", wxEmptyString, wxITEM_CHECK);

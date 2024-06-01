@@ -22,6 +22,7 @@ struct GameSettings
 	int gridSize = 30;
 	int interval = 50;
 	
+	bool isHUDChecked = true;
 	bool isNeighborCountChecked = true;
 	bool isTorodialChecked = false;
 	bool isShowGridChecked = true;
@@ -92,6 +93,7 @@ struct GameSettings
 		gridSize = 30;
 		interval = 50;
 
+		isHUDChecked = true;
 		isNeighborCountChecked = true;
 		isTorodialChecked = false;
 		isShowGridChecked = true;

@@ -24,21 +24,28 @@ struct GameSettings
 	
 	bool isHUDChecked = true;
 	bool isNeighborCountChecked = true;
-	bool isTorodialChecked = false;
+	bool isToroidalChecked = false;
 	bool isShowGridChecked = true;
 	bool isShowThickGridChecked = true;
 
-	wxColor GetLivingCellColor()
+	int windowWidth = 700;
+	int windowHeight = 800;
+
+	wxColor GetLivingCellColor() const
 	{
 		return wxColor(livingCellRed, livingCellGreen, livingCellBlue, livingCellAlpha);
 	}
-	wxColor GetDeadCellColor()
+	wxColor GetDeadCellColor() const
 	{
 		return wxColor(deadCellRed, deadCellGreen, deadCellBlue, deadCellAlpha);
 	}
-	wxColor GetGridLineColor()
+	wxColor GetGridLineColor() const
 	{
 		return wxColor(gridLineRed, gridLineGreen, gridLineBlue, gridLineAlpha);
+	}
+	wxSize GetWindowSize() const
+	{
+		return wxSize(windowWidth, windowHeight);
 	}
 	void SetLivingCellColor(const wxColor& color)
 	{
@@ -60,6 +67,11 @@ struct GameSettings
 		gridLineGreen = color.GetGreen();
 		gridLineBlue = color.GetBlue();
 		gridLineAlpha = color.GetAlpha();
+	}
+	void SetWindowSize(const wxSize& size)
+	{
+		windowWidth = size.x;
+		windowHeight = size.y;
 	}
 	void LoadSettingsFile()
 	{
@@ -95,9 +107,12 @@ struct GameSettings
 
 		isHUDChecked = true;
 		isNeighborCountChecked = true;
-		isTorodialChecked = false;
+		isToroidalChecked = false;
 		isShowGridChecked = true;
 		isShowThickGridChecked = true;
+		
+		windowWidth = 700;
+		windowHeight = 800;
 
 		SaveSettingsFile();
 	}

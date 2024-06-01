@@ -8,7 +8,7 @@
 #define OPTIONSMENU_RANDOM_TIME_ID 10007
 #define OPTIONSMENU_RANDOM_SEED_ID 10008
 #define VIEWMENU_FINITE_ID 10009
-#define VIEWMENU_TORODIAL_ID 10010
+#define VIEWMENU_Toroidal_ID 10010
 #define FILEMENU_IMPORT_ID 10011
 #define VIEWMENU_SHOW_GRID_ID 10012
 #define VIEWMENU_SHOW_THICK_GRID_ID 10013
@@ -38,7 +38,7 @@ wxBEGIN_EVENT_TABLE(MainWindow, wxFrame)
 	EVT_MENU(FILEMENU_IMPORT_ID, MainWindow::OnImportButtonClick)
 	EVT_MENU(wxID_EXIT, MainWindow::OnExitButtonClick)
 	EVT_MENU(VIEWMENU_FINITE_ID, MainWindow::OnFiniteButtonClick)
-	EVT_MENU(VIEWMENU_TORODIAL_ID, MainWindow::OnTorodialButtonClick)
+	EVT_MENU(VIEWMENU_Toroidal_ID, MainWindow::OnToroidalButtonClick)
 	EVT_MENU(VIEWMENU_SHOW_GRID_ID, MainWindow::OnShowGridButtonClick)
 	EVT_MENU(VIEWMENU_SHOW_THICK_GRID_ID, MainWindow::OnShowThickGridButtonClick)
 	EVT_MENU(VIEWMENU_HUD_ID, MainWindow::OnHUDButtonClick)
@@ -46,11 +46,12 @@ wxEND_EVENT_TABLE()
 
 void MainWindow::OnSizeChange(wxSizeEvent& sizeEvent)
 {
-	wxSize windowSize = GetSize();
+	mSettings.SetWindowSize(GetSize());
 	if (pDrawingPanel != nullptr)
 	{
-		pDrawingPanel->SetPanelSize(windowSize);
+		pDrawingPanel->SetPanelSize(mSettings.GetWindowSize());
 	}
+	mSettings.SaveSettingsFile();
 	sizeEvent.Skip();
 	pDrawingPanel->Refresh();
 }
@@ -89,6 +90,7 @@ void MainWindow::OnSettingsButtonClick(wxCommandEvent& buttonEvent)
 	int id = settingsDialog.ShowModal();
 	if (id == wxID_OK)
 	{
+		SetSize(mSettings.GetWindowSize());
 		InitializeGameBoard();
 		Refresh();
 	}
@@ -133,14 +135,18 @@ void MainWindow::OnOpenButtonClick(wxCommandEvent& buttonEvent)
 		return;
 	}
 
-	ClearUniverse();
-
 	int i = 0;
 	std::string buffer;
 	std::ifstream fileStream;
 	fileStream.open((std::string)openFileDialog.GetPath());
 	if (fileStream.is_open())
 	{
+		//do not run rest of the code if file is empty
+		std::getline(fileStream, buffer);
+		if (buffer.empty()) { return; }
+
+		ClearUniverse();
+
 		while (!fileStream.eof())
 		{
 			std::getline(fileStream, buffer);
@@ -180,8 +186,6 @@ void MainWindow::OnImportButtonClick(wxCommandEvent& buttonEvent)
 		return;
 	}
 
-	ClearUniverse();
-
 	int i = 0;
 	std::string buffer;
 	std::ifstream fileStream;
@@ -191,6 +195,10 @@ void MainWindow::OnImportButtonClick(wxCommandEvent& buttonEvent)
 	fileStream.open((std::string)openFileDialog.GetPath());
 	if (fileStream.is_open())
 	{
+		//do not run rest of the code if file is empty
+		std::getline(fileStream, buffer);
+		if (buffer.empty()) { return; }
+
 		//calculate how many rows and columns there are in the imported file
 		while (!fileStream.eof())
 		{
@@ -207,6 +215,8 @@ void MainWindow::OnImportButtonClick(wxCommandEvent& buttonEvent)
 	fileStream.open((std::string)openFileDialog.GetPath());
 	if (fileStream.is_open())
 	{
+		ClearUniverse();
+
 		while (!fileStream.eof())
 		{
 			std::getline(fileStream, buffer);
@@ -311,14 +321,14 @@ void MainWindow::OnExitButtonClick(wxCommandEvent& buttonEvent)
 
 void MainWindow::OnFiniteButtonClick(wxCommandEvent& buttonEvent)
 {
-	mSettings.isTorodialChecked = false;
+	mSettings.isToroidalChecked = false;
 	mSettings.SaveSettingsFile();
 	Refresh();
 }
 
-void MainWindow::OnTorodialButtonClick(wxCommandEvent& buttonEvent)
+void MainWindow::OnToroidalButtonClick(wxCommandEvent& buttonEvent)
 {
-	mSettings.isTorodialChecked = true;
+	mSettings.isToroidalChecked = true;
 	mSettings.SaveSettingsFile();
 	Refresh();
 }
@@ -416,7 +426,7 @@ int MainWindow::LivingNeighborCount(int& row, int& col)
 			int cellRow = row + j;
 			int cellCol = col + i;
 			
-			if (mSettings.isTorodialChecked)
+			if (mSettings.isToroidalChecked)
 			{
 				if (cellRow == -1)
 				{
@@ -458,8 +468,8 @@ void MainWindow::UpdateStatusBar()
 void MainWindow::RefreshMenuItems()
 {
 	pNeighborCountMenuItem->Check(mSettings.isNeighborCountChecked);
-	pFiniteMenuItem->Check(!(mSettings.isTorodialChecked));
-	pTorodialMenuItem->Check(mSettings.isTorodialChecked);
+	pFiniteMenuItem->Check(!(mSettings.isToroidalChecked));
+	pToroidalMenuItem->Check(mSettings.isToroidalChecked);
 	pShowGridMenuItem->Check(mSettings.isShowGridChecked);
 	pShowThickGridMenuItem->Check(mSettings.isShowThickGridChecked);
 	pHUDMenuItem->Check(mSettings.isHUDChecked);
@@ -501,7 +511,7 @@ void MainWindow::Refresh(bool eraseBackground, const wxRect* rect)
 }
 
 MainWindow::MainWindow() : 
-	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0), wxSize(700, 800)),
+	wxFrame(nullptr, wxID_ANY, "Game of Life", wxPoint(0, 0)),
 	pDrawingPanel(new DrawingPanel(this, mGameBoard, mSettings, mNeighborCounts)), 
 	pTimer(new wxTimer(this, TIMER_ID)),
 	pMenuBar(new wxMenuBar()),
@@ -516,6 +526,7 @@ MainWindow::MainWindow() :
 
 	//load settings
 	mSettings.LoadSettingsFile();
+	SetSize(mSettings.GetWindowSize());
 
 	//toolbar
 	wxBitmap playIcon(play_xpm);
@@ -559,10 +570,10 @@ MainWindow::MainWindow() :
 	wxMenu* universeTypeSubMenu = new wxMenu();
 	pFiniteMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_FINITE_ID, "Finite", wxEmptyString, wxITEM_CHECK);
 	pFiniteMenuItem->SetCheckable(true);
-	pTorodialMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_TORODIAL_ID, "Torodial", wxEmptyString, wxITEM_CHECK);
-	pTorodialMenuItem->SetCheckable(true);
+	pToroidalMenuItem = new wxMenuItem(universeTypeSubMenu, VIEWMENU_Toroidal_ID, "Toroidal", wxEmptyString, wxITEM_CHECK);
+	pToroidalMenuItem->SetCheckable(true);
 	universeTypeSubMenu->Append(pFiniteMenuItem);
-	universeTypeSubMenu->Append(pTorodialMenuItem);
+	universeTypeSubMenu->Append(pToroidalMenuItem);
 	
 	pViewMenu->AppendSubMenu(universeTypeSubMenu, "Boundary Type");
 

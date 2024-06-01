@@ -106,11 +106,13 @@ void DrawingPanel::OnPaint(wxPaintEvent& paintEvent)
 
 		graphicsContext->SetFont(wxFontInfo(fontSize), *wxRED);
 
-		wxString HUDText(wxString::Format("Boundary type: %s\nGame Board Size: %i x%i\nTimer Interval: %i ms", 
-			(rSettings.isTorodialChecked ? ("Torodial") : ("Finite")), 
+		wxString HUDText(wxString::Format("Boundary type: %s\nGame Board Size: %i x%i\nTimer Interval: %i ms\nWindow Size: %i x%i", 
+			(rSettings.isToroidalChecked ? ("Toroidal") : ("Finite")), 
 			rSettings.gridSize, 
 			rSettings.gridSize, 
-			rSettings.interval));
+			rSettings.interval,
+			rSettings.windowWidth,
+			rSettings.windowHeight));
 
 		double textWidth;
 		double textHeight;
@@ -142,7 +144,7 @@ void DrawingPanel::OnMouseUp(wxMouseEvent& mouseEvent)
 	pMainWindow->Refresh();
 }
 
-void DrawingPanel::SetPanelSize(wxSize& panelSize)
+void DrawingPanel::SetPanelSize(const wxSize& panelSize)
 {
 	SetSize(panelSize);
 }

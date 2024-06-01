@@ -58,58 +58,63 @@ SettingsDialog::SettingsDialog(wxWindow* mainWindowPtr, GameSettings& settings) 
 {
 	SetSizer(pMainSizer);
 	
+	int padding = 5;
+
 	//grid size
 	wxBoxSizer* gridSizeSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* gridSizeLabel = new wxStaticText(this, wxID_ANY, "Grid Size");
 	gridSizeCtrl = new wxSpinCtrl(this, GRID_SIZE_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, INT_MAX);
 	
-	gridSizeSizer->Add(gridSizeLabel);
-	gridSizeSizer->Add(gridSizeCtrl);
-	pMainSizer->Add(gridSizeSizer);
+	gridSizeSizer->Add(gridSizeLabel, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	gridSizeSizer->Add(gridSizeCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	pMainSizer->Add(gridSizeSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//interval
 	wxBoxSizer* intervalSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* intervalLabel = new wxStaticText(this, wxID_ANY, "Interval (ms)");
 	intervalCtrl = new wxSpinCtrl(this, INTERVAL_ID, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, INT_MAX);
 	
-	intervalSizer->Add(intervalLabel);
-	intervalSizer->Add(intervalCtrl);
-	pMainSizer->Add(intervalSizer);
+	intervalSizer->Add(intervalLabel, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	intervalSizer->Add(intervalCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	pMainSizer->Add(intervalSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//dead color
 	wxBoxSizer* deadColorSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* deadColorLabel = new wxStaticText(this, wxID_ANY, "Dead Cell Color");
 	deadColorCtrl = new wxColourPickerCtrl(this, DEAD_CELL_ID);
 	
-	deadColorSizer->Add(deadColorLabel);
-	deadColorSizer->Add(deadColorCtrl);
-	pMainSizer->Add(deadColorSizer);
+	deadColorSizer->Add(deadColorLabel, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	deadColorSizer->Add(deadColorCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	pMainSizer->Add(deadColorSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//alive color
 	wxBoxSizer* livingColorSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* livingColorLabel = new wxStaticText(this, wxID_ANY, "Living Cell Color");
 	livingColorCtrl = new wxColourPickerCtrl(this, LIVING_CELL_ID);
 	
-	livingColorSizer->Add(livingColorLabel);
-	livingColorSizer->Add(livingColorCtrl);
-	pMainSizer->Add(livingColorSizer);
+	livingColorSizer->Add(livingColorLabel, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	livingColorSizer->Add(livingColorCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	pMainSizer->Add(livingColorSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//grid line color
 	wxBoxSizer* gridLineColorSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxStaticText* gridLineColorLabel = new wxStaticText(this, wxID_ANY, "Grid Lines Color");
 	gridLineColorCtrl = new wxColourPickerCtrl(this, GRID_LINE_ID);
 
-	gridLineColorSizer->Add(gridLineColorLabel);
-	gridLineColorSizer->Add(gridLineColorCtrl);
-	pMainSizer->Add(gridLineColorSizer);
+	gridLineColorSizer->Add(gridLineColorLabel, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	gridLineColorSizer->Add(gridLineColorCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, padding);
+	pMainSizer->Add(gridLineColorSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//restore default
 	wxButton* resetSettingsButton = new wxButton(this, RESET_SETTINGS_ID, "Restore Default Settings");	
-	pMainSizer->Add(resetSettingsButton);
+	pMainSizer->Add(resetSettingsButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
 
 	//ok or cancel
 	wxSizer* confirmSizer = CreateButtonSizer(wxOK | wxCANCEL);
-	pMainSizer->Add(confirmSizer);
+	pMainSizer->Add(confirmSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, padding);
+
+	SetMinSize(pMainSizer->GetMinSize());
+	Fit();
 
 	LoadSettings();
 }

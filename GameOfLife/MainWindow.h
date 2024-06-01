@@ -22,7 +22,7 @@ private:
 	wxMenu* pOptionsMenu;
 	wxMenuItem* pNeighborCountMenuItem;
 	wxMenuItem* pFiniteMenuItem;
-	wxMenuItem* pTorodialMenuItem;
+	wxMenuItem* pToroidalMenuItem;
 	wxMenuItem* pShowGridMenuItem;
 	wxMenuItem* pShowThickGridMenuItem;
 	wxMenuItem* pHUDMenuItem;
@@ -47,7 +47,7 @@ private:
 	void OnImportButtonClick(wxCommandEvent& buttonEvent);
 	void OnExitButtonClick(wxCommandEvent& buttonEvent);
 	void OnFiniteButtonClick(wxCommandEvent& buttonEvent);
-	void OnTorodialButtonClick(wxCommandEvent& buttonEvent);
+	void OnToroidalButtonClick(wxCommandEvent& buttonEvent);
 	void OnShowGridButtonClick(wxCommandEvent& buttonEvent);
 	void OnShowThickGridButtonClick(wxCommandEvent& buttonEvent);
 	void OnHUDButtonClick(wxCommandEvent& buttonEvent);

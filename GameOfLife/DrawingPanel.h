@@ -17,7 +17,7 @@ private:
 	void OnPaint(wxPaintEvent& paintEvent);
 	void OnMouseUp(wxMouseEvent& mouseEvent);
 public:
-	void SetPanelSize(wxSize& panelSize);
+	void SetPanelSize(const wxSize& panelSize);
 	DrawingPanel(MainWindow* mainWindow, std::vector<std::vector<bool>>& gameBoard, GameSettings& settings, std::vector<std::vector<int>>& neighborCounts);
 	~DrawingPanel();
 	wxDECLARE_EVENT_TABLE();

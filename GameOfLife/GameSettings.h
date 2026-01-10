@@ -1,6 +1,6 @@
 #pragma once
-#include "wx/wx.h"
 #include <fstream>
+#include "Types.h"
 
 struct GameSettings
 {
@@ -31,44 +31,44 @@ struct GameSettings
 	int windowWidth = 700;
 	int windowHeight = 800;
 
-	wxColor GetLivingCellColor() const
+	Types::Color GetLivingCellColor() const
 	{
-		return wxColor(livingCellRed, livingCellGreen, livingCellBlue, livingCellAlpha);
+		return { livingCellRed, livingCellGreen, livingCellBlue, livingCellAlpha };
 	}
-	wxColor GetDeadCellColor() const
+	Types::Color GetDeadCellColor() const
 	{
-		return wxColor(deadCellRed, deadCellGreen, deadCellBlue, deadCellAlpha);
+		return { deadCellRed, deadCellGreen, deadCellBlue, deadCellAlpha };
 	}
-	wxColor GetGridLineColor() const
+	Types::Color GetGridLineColor() const
 	{
-		return wxColor(gridLineRed, gridLineGreen, gridLineBlue, gridLineAlpha);
+		return { gridLineRed, gridLineGreen, gridLineBlue, gridLineAlpha };
 	}
-	wxSize GetWindowSize() const
+	Types::Size GetWindowSize() const
 	{
-		return wxSize(windowWidth, windowHeight);
+		return { windowWidth, windowHeight };
 	}
-	void SetLivingCellColor(const wxColor& color)
+	void SetLivingCellColor(const Types::Color& color)
 	{
-		livingCellRed = color.GetRed();
-		livingCellGreen = color.GetGreen();
-		livingCellBlue = color.GetBlue();
-		livingCellAlpha = color.GetAlpha();
+		livingCellRed = color.r;
+		livingCellGreen = color.g;
+		livingCellBlue = color.b;
+		livingCellAlpha = color.a;
 	}
-	void SetDeadCellColor(const wxColor& color)
+	void SetDeadCellColor(const Types::Color& color)
 	{
-		deadCellRed = color.GetRed();
-		deadCellGreen = color.GetGreen();
-		deadCellBlue = color.GetBlue();
-		deadCellAlpha = color.GetAlpha();
+		deadCellRed = color.r;
+		deadCellGreen = color.g;
+		deadCellBlue = color.b;
+		deadCellAlpha = color.a;
 	}
-	void SetGridLineColor(const wxColor& color)
+	void SetGridLineColor(const Types::Color& color)
 	{
-		gridLineRed = color.GetRed();
-		gridLineGreen = color.GetGreen();
-		gridLineBlue = color.GetBlue();
-		gridLineAlpha = color.GetAlpha();
+		gridLineRed = color.r;
+		gridLineGreen = color.g;
+		gridLineBlue = color.b;
+		gridLineAlpha = color.a;
 	}
-	void SetWindowSize(const wxSize& size)
+	void SetWindowSize(const Types::Size & size)
 	{
 		windowWidth = size.x;
 		windowHeight = size.y;

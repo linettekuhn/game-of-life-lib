@@ -11,6 +11,11 @@ public:
 	int mLivingCellCount = 0;
 	GameSettings mSettings;
 
+	uintptr_t getGameBoardPointer();
+	uintptr_t getNeighborCountsPointer();
+	int getBoardSize() const;
+	void setGameBoardFromPointer(uintptr_t data, int size);
+
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();
 	void InitializeGameBoard();
@@ -19,5 +24,11 @@ public:
 	void ClearUniverse();
 
 	GameBoard();
+
+private:
+	std::vector<uint8_t> mFlatGameBoard;
+	std::vector<int> mFlatNeighborCounts;
+	void syncFlatToGrid();
+	void syncGridToFlat();
 };
 

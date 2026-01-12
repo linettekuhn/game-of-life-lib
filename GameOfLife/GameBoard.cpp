@@ -1,5 +1,39 @@
 #include "GameBoard.h"
 
+uintptr_t GameBoard::getGameBoardPointer()
+{
+	syncGridToFlat();
+	return reinterpret_cast<uintptr_t>(mFlatGameBoard.data());
+}
+
+uintptr_t GameBoard::getNeighborCountsPointer()
+{
+	return reinterpret_cast<uintptr_t>(mFlatNeighborCounts.data());
+}
+
+int GameBoard::getBoardSize() const
+{
+	return mSettings.gridSize * mSettings.gridSize;
+}
+
+void GameBoard::setGameBoardFromPointer(uintptr_t data, int size)
+{
+	if (size != getBoardSize()) {
+		return;
+	}
+
+	uint8_t* dataPtr = reinterpret_cast<uint8_t*>(data);
+
+	// Copy data into flat buffer
+	for (int i = 0; i < size; i++) {
+		mFlatGameBoard[i] = dataPtr[i];
+	}
+
+	// Sync to 2D grid
+	syncFlatToGrid();
+	UpdateCounts();
+}
+
 void GameBoard::RandomizeGameBoard(int seed)
 {
 	srand(seed);
@@ -17,6 +51,7 @@ void GameBoard::RandomizeGameBoard(int seed)
 			}
 		}
 	}
+	syncGridToFlat();
 	UpdateCounts();
 }
 
@@ -47,6 +82,7 @@ void GameBoard::NextGeneration()
 		}
 	}
 	mGameBoard.swap(sandbox);
+	syncGridToFlat();
 	UpdateCounts();
 }
 
@@ -54,6 +90,9 @@ void GameBoard::InitializeGameBoard()
 {
 	mGameBoard.resize(mSettings.gridSize);
 	mNeighborCounts.resize(mSettings.gridSize);
+	mFlatGameBoard.resize(mSettings.gridSize * mSettings.gridSize);
+	mFlatNeighborCounts.resize(mSettings.gridSize * mSettings.gridSize);
+
 	for (int i = 0; i < mSettings.gridSize; i++)
 	{
 		mGameBoard[i].resize(mSettings.gridSize);
@@ -112,6 +151,7 @@ void GameBoard::UpdateCounts()
 		for (int j = 0; j < mSettings.gridSize; j++)
 		{
 			mNeighborCounts[i][j] = LivingNeighborCount(j, i);
+			mFlatNeighborCounts[i * mSettings.gridSize + j] = mNeighborCounts[i][j];
 			if (mGameBoard[i][j]) { mLivingCellCount++; }
 		}
 	}
@@ -126,6 +166,8 @@ void GameBoard::ClearUniverse()
 	}
 	mGameBoard.clear();
 	mNeighborCounts.clear();
+	mFlatGameBoard.clear();
+	mFlatNeighborCounts.clear();
 
 	mLivingCellCount = 0;
 	mGenerationCount = 0;
@@ -134,10 +176,32 @@ void GameBoard::ClearUniverse()
 GameBoard::GameBoard()
 {	
 	//load settings
-	mSettings.LoadSettingsFile();
+	//mSettings.LoadSettingsFile();
 
 	//initialize gameboard
 	InitializeGameBoard();
 
 	UpdateCounts();
+}
+
+void GameBoard::syncFlatToGrid()
+{
+	for (int i = 0; i < mSettings.gridSize; i++)
+	{
+		for (int j = 0; j < mSettings.gridSize; j++)
+		{
+			mGameBoard[i][j] = mFlatGameBoard[i * mSettings.gridSize + j] != 0;
+		}
+	}
+}
+
+void GameBoard::syncGridToFlat()
+{
+	for (int i = 0; i < mSettings.gridSize; i++)
+	{
+		for (int j = 0; j < mSettings.gridSize; j++)
+		{
+			mGameBoard[i][j] = mFlatGameBoard[i * mSettings.gridSize + j] != 0;
+		}
+	}
 }

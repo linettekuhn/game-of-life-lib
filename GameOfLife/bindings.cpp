@@ -51,8 +51,10 @@ EMSCRIPTEN_BINDINGS(GameBoard) {
         .function("LivingNeighborCount", &GameBoard::LivingNeighborCount)
         .function("UpdateCounts", &GameBoard::UpdateCounts)
         .function("ClearUniverse", &GameBoard::ClearUniverse)
-        .property("mGameBoard", &GameBoard::mGameBoard)
-        .property("mNeighborCounts", &GameBoard::mNeighborCounts)
+        .function("getGameBoardPointer", &GameBoard::getGameBoardPointer)
+        .function("getNeighborCountsPointer", &GameBoard::getNeighborCountsPointer)
+        .function("getBoardSize", &GameBoard::getBoardSize)
+        .function("setGameBoardFromPointer", &GameBoard::setGameBoardFromPointer)
         .property("mGenerationCount", &GameBoard::mGenerationCount)
         .property("mLivingCellCount", &GameBoard::mLivingCellCount)
         .property("mSettings", &GameBoard::mSettings);

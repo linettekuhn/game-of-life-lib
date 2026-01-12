@@ -201,7 +201,7 @@ void GameBoard::syncGridToFlat()
 	{
 		for (int j = 0; j < mSettings.gridSize; j++)
 		{
-			mGameBoard[i][j] = mFlatGameBoard[i * mSettings.gridSize + j] != 0;
+			mFlatGameBoard[i * mSettings.gridSize + j] = mGameBoard[i][j] ? 1 : 0;
 		}
 	}
 }

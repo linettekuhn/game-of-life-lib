@@ -34,6 +34,17 @@ void GameBoard::setGameBoardFromPointer(uintptr_t data, int size)
 	UpdateCounts();
 }
 
+void GameBoard::setGameSettings(const GameSettings& settings)
+{
+	bool sizeChanged = (mSettings.gridSize != settings.gridSize);
+	mSettings = settings;
+
+	if (sizeChanged) {
+		InitializeGameBoard();
+		ClearUniverse(); 
+	}
+}
+
 void GameBoard::RandomizeGameBoard(int seed)
 {
 	srand(seed);
@@ -111,7 +122,7 @@ int GameBoard::LivingNeighborCount(int row, int col)
 			int cellRow = row + j;
 			int cellCol = col + i;
 			
-			if (mSettings.isToroidalChecked)
+			if (mSettings.isToroidal)
 			{
 				if (cellRow == -1)
 				{
@@ -159,15 +170,17 @@ void GameBoard::UpdateCounts()
 
 void GameBoard::ClearUniverse()
 {
-	for (int i = 0; i < mGameBoard.size(); i++)
+	for (int i = 0; i < mSettings.gridSize; i++)
 	{
-		mGameBoard[i].clear();
-		mNeighborCounts[i].clear();
+		for (int j = 0; j < mSettings.gridSize; j++)
+		{
+			mGameBoard[i][j] = false;
+			mNeighborCounts[i][j] = 0;
+		}
 	}
-	mGameBoard.clear();
-	mNeighborCounts.clear();
-	mFlatGameBoard.clear();
-	mFlatNeighborCounts.clear();
+
+	std::fill(mFlatGameBoard.begin(), mFlatGameBoard.end(), 0);
+	std::fill(mFlatNeighborCounts.begin(), mFlatNeighborCounts.end(), 0);
 
 	mLivingCellCount = 0;
 	mGenerationCount = 0;

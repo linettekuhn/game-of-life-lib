@@ -33,11 +33,11 @@ EMSCRIPTEN_BINDINGS(GameSettings) {
         .field("gridLineAlpha", &GameSettings::gridLineAlpha)
         .field("gridSize", &GameSettings::gridSize)
         .field("interval", &GameSettings::interval)
-        .field("isHUDChecked", &GameSettings::isHUDChecked)
-        .field("isNeighborCountChecked", &GameSettings::isNeighborCountChecked)
-        .field("isToroidalChecked", &GameSettings::isToroidalChecked)
-        .field("isShowGridChecked", &GameSettings::isShowGridChecked)
-        .field("isShowThickGridChecked", &GameSettings::isShowThickGridChecked)
+        .field("showHUD", &GameSettings::showHUD)
+        .field("showNeighborCount", &GameSettings::showNeighborCount)
+        .field("isToroidal", &GameSettings::isToroidal)
+        .field("showGrid", &GameSettings::showGrid)
+        .field("showThickGrid", &GameSettings::showThickGrid)
         .field("windowWidth", &GameSettings::windowWidth)
         .field("windowHeight", &GameSettings::windowHeight);
 }
@@ -55,6 +55,7 @@ EMSCRIPTEN_BINDINGS(GameBoard) {
         .function("getNeighborCountsPointer", &GameBoard::getNeighborCountsPointer)
         .function("getBoardSize", &GameBoard::getBoardSize)
         .function("setGameBoardFromPointer", &GameBoard::setGameBoardFromPointer)
+        .function("setGameSettings", &GameBoard::setGameSettings)
         .property("mGenerationCount", &GameBoard::mGenerationCount)
         .property("mLivingCellCount", &GameBoard::mLivingCellCount)
         .property("mSettings", &GameBoard::mSettings);

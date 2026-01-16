@@ -15,6 +15,7 @@ public:
 	uintptr_t getNeighborCountsPointer();
 	int getBoardSize() const;
 	void setGameBoardFromPointer(uintptr_t data, int size);
+	void setGameSettings(const GameSettings& settings);
 
 	void RandomizeGameBoard(int seed);
 	void NextGeneration();
